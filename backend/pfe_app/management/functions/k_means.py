@@ -33,6 +33,7 @@ def kmeans(numberOfClusters):
     users = User.objects.values('longitude', 'latitude')
     data = np.array([(x['longitude'], x['latitude']) for x in users])
 
+
     kmeans = KMeans(n_clusters=numberOfClusters, init='k-means++', random_state=0).fit(data)
 
     
@@ -82,7 +83,7 @@ def create_clusters(kmeans, numberOfClusters):
         spread_rate = None
         
         cluster = Cluster(cluster_id=i+1, number_of_users=number_of_users, number_of_sick_users=number_of_sick_users,
-                          centroid_latitude=centroid[0], centroid_longitude=centroid[1], color=color,
+                          centroid_latitude=centroid[1], centroid_longitude=centroid[0], color=color,
                           radius=radius, spread_rate=spread_rate)
         cluster.save()
 

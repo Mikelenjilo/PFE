@@ -12,7 +12,7 @@ regions = {
     'North-West Algeria': {'lat_range': (34.2089, 35.13814), 'lon_range': (-1.20544, 1.79107)}
 }
 
-diseases = ['maladies rénales', 'cancer', 'diabète', 'maladies respiratoires', 'maladies cardiaques', None]
+diseases = ['maladies renales', 'cancer', 'diabete', 'maladies respiratoires', 'maladies cardiaques', None]
 
 def generateUsers():
     for i in range(500):
@@ -22,7 +22,7 @@ def generateUsers():
                 email = f'{first_name}.{last_name}@example.com'
                 password = 'password123'
 
-                diseases = ['maladies rénales', 'cancer', 'diabète', 'maladies respiratoires', 'maladies cardiaques', None, None, None]
+                diseases = ['maladies renales', 'cancer', 'diabete', 'maladies respiratoires', 'maladies cardiaques', None, None, None]
                 cronic_disease_1 = random.choice(diseases)
                 if cronic_disease_1 != None:
                     diseases.remove(cronic_disease_1)
@@ -43,7 +43,7 @@ def generateUsers():
                 if cronic_disease_5 != None:
                     diseases.remove(cronic_disease_5)
 
-                diseases = ['maladies rénales', 'cancer', 'diabète', 'maladies respiratoires', 'maladies cardiaques', None, None, None]
+                diseases = ['maladies renales', 'cancer', 'diabete', 'maladies respiratoires', 'maladies cardiaques', None, None, None]
                 gender = random.choice(['Homme', 'Femme'])
 
                 region = random.choices(list(regions.keys()), weights=[5, 2, 20, 15, 8], k=1)[0]

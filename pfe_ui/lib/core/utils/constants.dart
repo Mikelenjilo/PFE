@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppConstants {
-  static const String databaseName = 'example14.db';
-
   static const int clusterNumber = 4;
   static const int numberOfUsers = 100;
   static const int numberOfSickUsers = 30;

@@ -14,7 +14,7 @@ class ClusterSerializer(serializers.ModelSerializer):
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'password', 'gender', 'cronic_disease_1', 'cronic_disease_2', 'cronic_disease_3', 'cronic_disease_4', 'cronic_disease_5', 'cluster_id_id']
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'password', 'gender', 'date_of_contamination', 'cluster_id_id']
 
 class UserOnlineStatusSerializer(serializers.ModelSerializer):
     class Meta:
