@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pfe_ui/src/models/user.dart';
 
 final kTextStyleTitle = GoogleFonts.mada(
   color: const Color(0xFF1273EB),

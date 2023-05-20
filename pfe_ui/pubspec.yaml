@@ -17,6 +17,7 @@ dependencies:
   flutter_map: ^4.0.0
   geolocator: ^9.0.2
   get: ^4.6.5
+  get_it: ^7.6.0
   google_fonts: ^4.0.4
   http: ^0.13.6
   latlong2: ^0.8.1

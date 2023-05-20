@@ -9,9 +9,9 @@ import 'package:http/http.dart' as http;
 
 class DjangoHelper {
   // Users GET
-  static String getUsersUrl = '${DatabaseConstants.baseUrl}users/';
+  static String getUsersUrl = '${DjangoConstants.baseUrl}users/';
   static String getUserByEmailUrl =
-      '${DatabaseConstants.baseUrl}get_user_by_email/';
+      '${DjangoConstants.baseUrl}get_user_by_email/';
 
   static Future<List<User>> getUsers() async {
     final response = await Dio().get(getUsersUrl);
@@ -31,69 +31,15 @@ class DjangoHelper {
   }
 
   // Users POST
-  static String postCreateUserUrl = '${DatabaseConstants.baseUrl}create_user/';
-
-  static Future<bool> postRegisterUser({
-    required String email,
-    required String password,
-    required String firstName,
-    required String lastName,
-    required DateTime dateOfBirth,
-    required String gender,
-    DateTime? dateOfContamination,
-  }) async {
-    try {
-      Map<String, dynamic> data = {
-        'first_name': firstName,
-        'last_name': lastName,
-        'date_of_birth': dateOfBirth.toString().split(' ')[0],
-        'email': email,
-        'password': password,
-        'gender': gender,
-        'date_of_contamination': dateOfContamination.toString().split(' ')[0],
-        'cluster_id': 0,
-      };
-
-      var encodedData = json.encode(data);
-
-      final url = Uri.parse(postCreateUserUrl);
-      final response = await http.post(
-        url,
-        body: encodedData,
-        headers: {'Content-Type': 'application/json'},
-      );
-      return response.statusCode == 200 ? true : false;
-    } on Exception catch (exception) {
-      throw Exception('Error: $exception');
-    }
-  }
+  static String postCreateUserUrl = '${DjangoConstants.baseUrl}create_user/';
 
   // Users PATCH
-  static String patchLoginUserUrl = '${DatabaseConstants.baseUrl}login_user/';
-  static String patchLogoutUserUrl = '${DatabaseConstants.baseUrl}logout_user/';
+  static String patchLoginUserUrl = '${DjangoConstants.baseUrl}login_user/';
+  static String patchLogoutUserUrl = '${DjangoConstants.baseUrl}logout_user/';
   static String patchUpdateUserPasswordUrl =
-      '${DatabaseConstants.baseUrl}update_user_password/';
+      '${DjangoConstants.baseUrl}update_user_password/';
   static String patchUpdateUserLatitudeAndLongitudeUrl =
-      '${DatabaseConstants.baseUrl}update_user_latitude_and_longitude/}';
-
-  static Future<bool> patchLoginUser({required String email}) async {
-    final data = {'email': email};
-    final encodedData = jsonEncode(data);
-    final url = Uri.parse(patchLoginUserUrl);
-    final response = await http.patch(
-      url,
-      body: encodedData,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    return response.statusCode == 200 ? true : false;
-  }
-
-  static Future<bool> patchLogoutUser({required String email}) async {
-    final response = await Dio().patch(patchLoginUserUrl);
-
-    return response.statusCode == 200 ? true : false;
-  }
+      '${DjangoConstants.baseUrl}update_user_latitude_and_longitude/}';
 
   static Future<bool> patchUpdateUserPassword(
       {required int userId, required String password}) async {
@@ -116,7 +62,7 @@ class DjangoHelper {
   }
 
   // Users DELETE
-  static String deleteUserByIdUrl = '${DatabaseConstants.baseUrl}users/';
+  static String deleteUserByIdUrl = '${DjangoConstants.baseUrl}users/';
 
   static Future<bool> deleteUserById(int userId) async {
     final response = await Dio().delete('$deleteUserByIdUrl/$userId');
@@ -125,7 +71,7 @@ class DjangoHelper {
   }
 
   // Clusters GET
-  static String getClusterUrl = '${DatabaseConstants.baseUrl}clusters/';
+  static String getClusterUrl = '${DjangoConstants.baseUrl}clusters/';
 
   static Future<List<Cluster>> getClusters() async {
     final url = Uri.parse(getClusterUrl);

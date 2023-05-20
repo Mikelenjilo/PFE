@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/user_info_controller.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
-import 'package:pfe_ui/src/services/map/map_services_impl.dart';
 
 class ConnexionController extends GetxController {
   late String email;

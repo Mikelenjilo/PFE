@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
-import 'dart:math' as math;
 
 import 'package:pfe_ui/src/services/recommandations/recommandations_services_impl.dart';
 

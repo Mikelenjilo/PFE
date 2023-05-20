@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:pfe_ui/core/services/django_helper.dart';
+import 'package:pfe_ui/core/utils/database_constants.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services.dart';
 
@@ -14,15 +18,25 @@ class AuthImpl implements IAuth {
     DateTime? dateOfContamination,
   }) async {
     try {
-      final bool registerUser = await DjangoHelper.postRegisterUser(
-        email: email,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        dateOfBirth: dateOfBirth,
-        gender: gender,
+      Map<String, dynamic> data = {
+        'first_name': firstName,
+        'last_name': lastName,
+        'date_of_birth': dateOfBirth.toString().split(' ')[0],
+        'email': email,
+        'password': password,
+        'gender': gender,
+        'date_of_contamination': dateOfContamination.toString().split(' ')[0],
+        'cluster_id': 0,
+      };
+      var encodedData = json.encode(data);
+
+      final url = Uri.parse(DjangoConstants.postCreateUserUrl);
+      final response = await http.post(
+        url,
+        body: encodedData,
+        headers: {'Content-Type': 'application/json'},
       );
-      return registerUser;
+      return response.statusCode == 200;
     } on Exception catch (failure) {
       throw Exception('Error : $failure');
     }
@@ -35,9 +49,21 @@ class AuthImpl implements IAuth {
         final User user = await DjangoHelper.getUserByEmail(email);
 
         if (user.password == password) {
-          await DjangoHelper.patchLoginUser(email: email);
-          user.online = true;
-          return user;
+          final data = {'email': email};
+          final encodedData = jsonEncode(data);
+          final url = Uri.parse(DjangoConstants.patchLoginUserUrl);
+          final response = await http.patch(
+            url,
+            body: encodedData,
+            headers: {'Content-Type': 'application/json'},
+          );
+
+          if (response.statusCode == 200) {
+            user.online = true;
+            return user;
+          } else {
+            throw Exception('Error : ${response.statusCode}');
+          }
         } else {
           throw Exception('Password is incorrect');
         }
@@ -52,8 +78,18 @@ class AuthImpl implements IAuth {
   @override
   Future<bool> signOut(User user) async {
     try {
-      var signOut = await DjangoHelper.patchLogoutUser(email: user.email);
-      return signOut;
+      final url = Uri.parse(DjangoConstants.patchLogoutUserUrl);
+      final response = await http.patch(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        user.online = false;
+        return true;
+      } else {
+        throw Exception('Error : ${response.statusCode}');
+      }
     } on Exception catch (exception) {
       throw Exception('Error : $exception');
     }
