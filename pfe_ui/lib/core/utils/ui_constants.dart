@@ -43,3 +43,9 @@ final kAppBarWelcomePage = AppBar(
 );
 
 const List<String> genderOptions = ['Homme', 'Femme'];
+
+enum Pages {
+  HomePage1,
+  HomePage2,
+  HomePage3,
+}

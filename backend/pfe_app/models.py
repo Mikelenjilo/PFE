@@ -35,6 +35,5 @@ class Cluster(models.Model):
     number_of_sick_users = models.IntegerField()
     centroid_latitude = models.FloatField()
     centroid_longitude = models.FloatField()
-    color = models.CharField(max_length=50)
     radius = models.FloatField()
     spread_rate = models.FloatField(null=True)

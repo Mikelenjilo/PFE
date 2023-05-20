@@ -28,10 +28,10 @@ class AuthImpl implements IAuth {
         'date_of_contamination': dateOfContamination.toString().split(' ')[0],
         'cluster_id': 0,
       };
-      var encodedData = json.encode(data);
+      final String encodedData = json.encode(data);
 
-      final url = Uri.parse(DjangoConstants.postCreateUserUrl);
-      final response = await http.post(
+      final Uri url = Uri.parse(DjangoConstants.postCreateUserUrl);
+      final http.Response response = await http.post(
         url,
         body: encodedData,
         headers: {'Content-Type': 'application/json'},
@@ -49,10 +49,10 @@ class AuthImpl implements IAuth {
         final User user = await DjangoHelper.getUserByEmail(email);
 
         if (user.password == password) {
-          final data = {'email': email};
-          final encodedData = jsonEncode(data);
-          final url = Uri.parse(DjangoConstants.patchLoginUserUrl);
-          final response = await http.patch(
+          final Map<String, String> data = {'email': email};
+          final String encodedData = jsonEncode(data);
+          final Uri url = Uri.parse(DjangoConstants.patchLoginUserUrl);
+          final http.Response response = await http.patch(
             url,
             body: encodedData,
             headers: {'Content-Type': 'application/json'},
@@ -78,8 +78,8 @@ class AuthImpl implements IAuth {
   @override
   Future<bool> signOut(User user) async {
     try {
-      final url = Uri.parse(DjangoConstants.patchLogoutUserUrl);
-      final response = await http.patch(
+      final Uri url = Uri.parse(DjangoConstants.patchLogoutUserUrl);
+      final http.Response response = await http.patch(
         url,
         headers: {'Content-Type': 'application/json'},
       );

@@ -2,10 +2,9 @@ import 'package:latlong2/latlong.dart';
 
 class Cluster {
   int clusterId;
-  int numberOfUsers;
-  int numberOfSickUsers;
-  LatLng centroidPosition;
-  String color;
+  int numberOfUsers = 0;
+  int numberOfSickUsers = 0;
+  LatLng centroidPosition = LatLng(0, 0);
   double radius;
   double spreadRate;
 
@@ -14,14 +13,13 @@ class Cluster {
     required this.numberOfUsers,
     required this.numberOfSickUsers,
     required this.centroidPosition,
-    required this.color,
     required this.radius,
     required this.spreadRate,
   });
 
   @override
   String toString() {
-    return 'Cluster(clusterId: $clusterId, numberOfUsers: $numberOfUsers, numberOfSickUsers: $numberOfSickUsers, centroidPosition: $centroidPosition, color: $color, radius: $radius, spreadRate: $spreadRate)';
+    return 'Cluster(clusterId: $clusterId, numberOfUsers: $numberOfUsers, numberOfSickUsers: $numberOfSickUsers, centroidPosition: $centroidPosition, radius: $radius, spreadRate: $spreadRate)';
   }
 
   Map<String, dynamic> toJson() {
@@ -31,7 +29,6 @@ class Cluster {
       'number_of_sick_users': numberOfSickUsers,
       'centroid_latitude': centroidPosition.latitude,
       'centroid_longitude': centroidPosition.longitude,
-      'color': color,
       'radius': radius,
       'spread_rate': spreadRate,
     };
@@ -46,7 +43,6 @@ class Cluster {
         json['centroid_latitude'],
         json['centroid_longitude'],
       ),
-      color: json['color'],
       radius: json['radius'],
       spreadRate: json['spread_rate'],
     );

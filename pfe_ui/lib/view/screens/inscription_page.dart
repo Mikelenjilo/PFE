@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pfe_ui/core/config/themes/constants.dart';
+import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/controller/inscription_controller.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
 import 'package:pfe_ui/view/widgets/custom_drop_downbuttom_field.dart';

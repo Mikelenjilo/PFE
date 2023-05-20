@@ -3,7 +3,7 @@ class User {
 
   String firstName;
   String lastName;
-  DateTime? dateOfBirth;
+  DateTime dateOfBirth;
   String email;
   String password;
   String? cronicDisease1;
@@ -33,10 +33,10 @@ class User {
     this.cronicDisease4,
     this.cronicDisease5,
     required this.gender,
-    required this.latitude,
-    required this.longitude,
+    this.latitude,
+    this.longitude,
     this.ifTransmit = false,
-    required this.dateOfContamination,
+    this.dateOfContamination,
     this.recommandation,
     this.clusterId = 0,
     this.online = false,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/connexion_controller.dart';
-import 'package:pfe_ui/core/config/themes/constants.dart';
+import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
 import 'package:pfe_ui/view/screens/inscription_page.dart';
 

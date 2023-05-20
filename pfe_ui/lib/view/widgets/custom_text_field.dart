@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pfe_ui/core/config/themes/constants.dart';
+import 'package:pfe_ui/core/utils/ui_constants.dart';
 
 class CustomTextField extends StatelessWidget {
   final String text;

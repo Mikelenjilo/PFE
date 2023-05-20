@@ -7,27 +7,6 @@ from pfe_app.management.functions.remove_clusters import removeCluster
 
 from pfe_app.models import User, Cluster
 
-# def kmeans(cursor, numberOfClusters):
-#     cursor.execute('SELECT longitude, latitude FROM pfe_app_user')
-#     data = np.array(cursor.fetchall())
-
-#     print(type(data))
-#     kmeans = KMeans(n_clusters=numberOfClusters, init='k-means++', random_state=0).fit(data)
-#     labels = kmeans.labels_
-
-#     colors = ['red', 'blue', 'green', 'cyan', 'orange', 'purple', 'pink', 'yellow']
-
-#     for i in range(numberOfClusters):
-#         plt.scatter(data[labels==i,0], data[labels==i,1], s=10, c=colors[i], alpha=0.5)
-
-    
-#     for i, user in enumerate(User.objects.all()):
-#         user.cluster_id = labels[i] + 1
-#         user.save()
-
-#     plt.show()
-
-
 def kmeans(numberOfClusters):
     removeCluster()
     users = User.objects.values('longitude', 'latitude')
@@ -45,7 +24,6 @@ def kmeans(numberOfClusters):
 
 def create_clusters(kmeans, numberOfClusters):
     labels = kmeans.labels_
-    colors = ['red', 'blue', 'green', 'cyan', 'orange', 'purple', 'pink', 'yellow'] # TODO: make the colors unique
     
     for i in range(numberOfClusters):
         users_in_cluster = []
@@ -70,7 +48,6 @@ def create_clusters(kmeans, numberOfClusters):
 
         centroid = kmeans.cluster_centers_[i]
 
-        color = random.choice(colors)
         
         for user in users_in_cluster:
             user_loc = (user.latitude, user.longitude)
@@ -78,7 +55,7 @@ def create_clusters(kmeans, numberOfClusters):
             distance = haversine(user_loc, centroid_loc, unit=Unit.METERS)
             distances.append(distance)
 
-        radius = sum(distances) / len(distances)
+        radius = max(distances)
 
         spread_rate = None
         
