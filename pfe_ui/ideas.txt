@@ -1,0 +1,10 @@
+- I think I should store the user's infos using Sharred Preference instead of using a controller.
+- une méthode qui permet de update les maladies chroniques
+- une méthode qui permet de update la latitude et longitude.
+- vérifier la validité des infos lors de l'inscription.
+- add the "connexion" feature
+- handle when the user doesn't provide location
+- add loading screen when loginnig
+- add more regions
+- encrypt the password
+- remove the password from the get query
