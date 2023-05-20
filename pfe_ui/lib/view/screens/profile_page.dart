@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pfe_ui/controller/user_info_controller.dart';
+import 'package:pfe_ui/core/services/shared_preferences_services.dart';
 import 'package:pfe_ui/view/screens/update_info_page.dart';
 import 'package:pfe_ui/view/widgets/profile_info_item.dart';
 
-final userInfoController = Get.find<UserInfoController>();
-
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,23 +40,23 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 90.0),
             ProfileInfoItem(
               label: 'Nom :',
-              value: userInfoController.firstName!,
+              value: SharedPreferencesService.getLastName(),
             ),
             ProfileInfoItem(
               label: 'Prénom :',
-              value: userInfoController.lastName!,
+              value: SharedPreferencesService.getFirstName(),
             ),
             ProfileInfoItem(
               label: 'Date de naissance :',
-              value: userInfoController.dateOfBirth.toString().split(' ')[0],
+              value: SharedPreferencesService.getDateOfBirth(),
             ),
             ProfileInfoItem(
               label: 'Genre: ',
-              value: userInfoController.gender!,
+              value: SharedPreferencesService.getGender(),
             ),
             ProfileInfoItem(
               label: 'Email :',
-              value: userInfoController.email!,
+              value: SharedPreferencesService.getEmail(),
             ),
             const SizedBox(height: 16.0),
             Center(

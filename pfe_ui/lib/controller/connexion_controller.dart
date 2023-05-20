@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pfe_ui/controller/user_info_controller.dart';
+import 'package:pfe_ui/core/services/shared_preferences_services.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
 
@@ -20,26 +20,28 @@ class ConnexionController extends GetxController {
     final User user =
         await AuthImpl().signInWithEmailAndPassword(email, password);
 
-    final userInfoController = Get.find<UserInfoController>();
+    // final userInfoController = Get.find<UserInfoController>();
 
-    userInfoController.userId = user.userId;
-    userInfoController.firstName = user.firstName;
-    userInfoController.lastName = user.lastName;
-    userInfoController.dateOfBirth = user.dateOfBirth;
-    userInfoController.email = user.email;
-    userInfoController.password = user.password;
-    userInfoController.cronicDisease1 = user.cronicDisease1;
-    userInfoController.cronicDisease2 = user.cronicDisease2;
-    userInfoController.cronicDisease3 = user.cronicDisease3;
-    userInfoController.cronicDisease4 = user.cronicDisease4;
-    userInfoController.cronicDisease5 = user.cronicDisease5;
-    userInfoController.gender = user.gender;
-    userInfoController.latitude = user.latitude;
-    userInfoController.longitude = user.longitude;
-    userInfoController.ifTransmit = user.ifTransmit;
-    userInfoController.dateOfContamination = user.dateOfContamination;
-    userInfoController.online = user.online;
-    userInfoController.clusterId = user.clusterId;
+    SharedPreferencesService.setUserId(user.userId);
+    SharedPreferencesService.setFirstName(user.firstName);
+    SharedPreferencesService.setLastName(user.lastName);
+    SharedPreferencesService.setDateOfBirth(
+        user.dateOfBirth.toString().split(' ')[0]);
+    SharedPreferencesService.setEmail(user.email);
+    SharedPreferencesService.setPassword(user.password);
+    SharedPreferencesService.setCronicDisease1(user.cronicDisease1 ?? '');
+    SharedPreferencesService.setCronicDisease2(user.cronicDisease2 ?? '');
+    SharedPreferencesService.setCronicDisease3(user.cronicDisease3 ?? '');
+    SharedPreferencesService.setCronicDisease4(user.cronicDisease4 ?? '');
+    SharedPreferencesService.setCronicDisease5(user.cronicDisease5 ?? '');
+    SharedPreferencesService.setGender(user.gender);
+    SharedPreferencesService.setLatitude(user.latitude ?? 0.0);
+    SharedPreferencesService.setLongitude(user.longitude ?? 0.0);
+    SharedPreferencesService.setIfTransmit(user.ifTransmit ?? false);
+    SharedPreferencesService.setDateOfContamination(
+        user.dateOfContamination.toString().split(' ')[0]);
+    SharedPreferencesService.setOnline(user.online ?? false);
+    SharedPreferencesService.setClusterId(user.clusterId);
 
     Get.snackbar(
       'Connexion réussie',

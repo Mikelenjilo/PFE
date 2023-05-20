@@ -8,3 +8,4 @@
 - add more regions
 - encrypt the password
 - remove the password from the get query
+- fix the recommandation feature (it broke because I change from UserInfoController to Sharred Preference)

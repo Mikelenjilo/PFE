@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pfe_ui/core/utils/database_constants.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
@@ -25,8 +24,10 @@ class DjangoHelper {
   }
 
   static Future<User> getUserById(int id) async {
-    final response = await Dio().get('${DjangoConstants.getUsersUrl}/$id');
-    return User.fromJson(response.data);
+    final Uri url = Uri.parse('${DjangoConstants.getUsersUrl}/$id');
+    final http.Response response = await http.get(url);
+    final userData = jsonDecode(response.body);
+    return User.fromJson(userData);
   }
 
   static Future<bool> patchUpdateUserPassword(
