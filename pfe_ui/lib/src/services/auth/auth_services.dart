@@ -1,14 +1,14 @@
 import 'package:pfe_ui/src/models/user.dart';
 
 abstract class IAuth {
-  Future<bool> registerInWithEmailAndPassword({
+  Future<User?> registerInWithEmailAndPassword({
     required String email,
     required String password,
     required String firstName,
     required String lastName,
-    required DateTime dateOfBirth,
+    required String dateOfBirth,
     required String gender,
-    DateTime? dateOfContamination,
+    String? dateOfContamination,
   });
 
   Future<User> signInWithEmailAndPassword(String email, String password);

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
-import 'package:pfe_ui/controller/inscription_controller.dart';
 
 class CustomDropDownButtomField extends StatelessWidget {
-  const CustomDropDownButtomField({super.key});
+  final Function(String?)? genderLogic;
+  const CustomDropDownButtomField({super.key, required this.genderLogic});
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +37,7 @@ class CustomDropDownButtomField extends StatelessWidget {
                 ),
               ),
             ],
-            onChanged: (value) {
-              var controller = Get.find<InscriptionController>();
-              var gender = value!;
-              controller.gender = gender;
-            },
+            onChanged: genderLogic,
           ),
         ),
       ],

@@ -40,7 +40,9 @@ class MapPage extends StatelessWidget {
             ),
             Visibility(
               visible: mapController.isLoading,
-              child: const CustomLoadingIndicator(),
+              child: const CustomLoadingIndicator(
+                  text:
+                      'Entrain de collecter les données de l\'utilisateur...'),
             ),
           ],
         ),

@@ -5,11 +5,17 @@ class CustomTextField extends StatelessWidget {
   final String text;
   final String hintText;
   final TextEditingController controller;
-  CustomTextField(
-      {super.key,
-      required this.text,
-      required this.hintText,
-      required this.controller});
+  final TextInputType? keyboardType;
+  final bool obscureText;
+
+  const CustomTextField({
+    super.key,
+    required this.text,
+    required this.hintText,
+    required this.controller,
+    this.keyboardType,
+    this.obscureText = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +28,13 @@ class CustomTextField extends StatelessWidget {
         ),
         const SizedBox(height: 9.0),
         TextField(
+          keyboardType: keyboardType,
           style: kTextStyleTextField,
           decoration: kInputDecoration.copyWith(
             hintText: hintText,
           ),
           controller: controller,
+          obscureText: obscureText,
         ),
       ],
     );

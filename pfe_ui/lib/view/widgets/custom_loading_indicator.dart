@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomLoadingIndicator extends StatelessWidget {
-  const CustomLoadingIndicator({super.key});
+  final String text;
+  const CustomLoadingIndicator({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +15,14 @@ class CustomLoadingIndicator extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16.0),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16.0),
               Text(
-                'Entrain de collecter les données de l\'utilisateur...',
-                style: TextStyle(fontSize: 15.0),
+                text,
+                style: const TextStyle(fontSize: 15.0),
               ),
             ],
           ),

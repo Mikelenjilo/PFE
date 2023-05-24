@@ -3,7 +3,7 @@ class User {
 
   String firstName;
   String lastName;
-  DateTime dateOfBirth;
+  String dateOfBirth;
   String email;
   String password;
   String? cronicDisease1;
@@ -15,7 +15,7 @@ class User {
   double? latitude;
   double? longitude;
   bool? ifTransmit;
-  DateTime? dateOfContamination;
+  String? dateOfContamination;
   List<Map<String, num>>? recommandation;
   int clusterId = 0;
   bool? online;
@@ -72,7 +72,7 @@ class User {
       userId: json['user_id'],
       firstName: json['first_name'],
       lastName: json['last_name'],
-      dateOfBirth: DateTime.parse(json['date_of_birth']),
+      dateOfBirth: json['date_of_birth'],
       email: json['email'],
       password: json['password'],
       gender: json['gender'],
@@ -83,11 +83,13 @@ class User {
       cronicDisease5: json['cronic_disease_5'],
       latitude: json['latitude'],
       longitude: json['longitude'],
-      dateOfContamination: DateTime.parse(json['date_of_contamination']),
+      dateOfContamination: json['date_of_contamination'],
       ifTransmit: json['if_transmit'],
       clusterId: json['cluster_id'],
       online: json['online'],
     );
+
+    // maassi@gmail.com
 
     return user;
   }

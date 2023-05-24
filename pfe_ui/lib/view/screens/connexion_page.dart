@@ -46,6 +46,7 @@ class Connexion extends StatelessWidget {
                       children: [
                         const SizedBox(height: 13.0),
                         TextFormField(
+                          keyboardType: TextInputType.emailAddress,
                           controller: emailController,
                           decoration: const InputDecoration(
                             hintText: "Entrez votre adresse email",
@@ -53,6 +54,7 @@ class Connexion extends StatelessWidget {
                         ),
                         const SizedBox(height: 13.0),
                         TextFormField(
+                          obscureText: true,
                           controller: passwordController,
                           decoration: const InputDecoration(
                             hintText: "Mot de passe",
@@ -68,13 +70,14 @@ class Connexion extends StatelessWidget {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              connexionController
-                                  .setEmail(emailController.text);
-                              connexionController
-                                  .setPassword(passwordController.text);
-                              await connexionController.signIn();
-
-                              Get.to(() => const AppPage());
+                              final bool isSignedIn =
+                                  await connexionController.setSignInInfo(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+                              if (isSignedIn) {
+                                Get.to(() => const AppPage());
+                              }
                             },
                             style: ButtonStyle(
                               backgroundColor:

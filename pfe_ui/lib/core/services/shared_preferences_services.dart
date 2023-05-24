@@ -103,4 +103,8 @@ class SharedPreferencesService {
   static bool getOnline() => _preferences.getBool('online') ?? false;
 
   static int getClusterId() => _preferences.getInt('clusterId') ?? 0;
+
+  static void clear() {
+    _preferences.clear();
+  }
 }

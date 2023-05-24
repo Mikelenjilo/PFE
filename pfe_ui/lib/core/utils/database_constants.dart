@@ -1,5 +1,5 @@
 abstract class DjangoConstants {
-  static const String baseUrl = 'http://192.168.1.46:8000/';
+  static const String baseUrl = 'http://192.168.1.43:8000/';
   // GET urls
   static const String getUsersUrl = '${baseUrl}users/';
   static const String getUserByEmailUrl = '${baseUrl}get_user_by_email/';

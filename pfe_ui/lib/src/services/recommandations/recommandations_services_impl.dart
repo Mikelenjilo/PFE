@@ -14,7 +14,9 @@ class RecommandationServicesImpl implements IRecommandationsServices {
       print('spread rate: $spreadRate');
       final double avgFactorDisease = _avgCronicFactors();
       print('avg factor disease: $avgFactorDisease');
-      int age = DateTime.now().year - userInfoController.dateOfBirth!.year;
+      final DateTime dateOfBirthInDateTime =
+          DateTime.parse(userInfoController.dateOfBirth!);
+      int age = DateTime.now().year - dateOfBirthInDateTime.year;
       print('age: $age');
       double factorAge = _factorAge(age);
       print('factor age: $factorAge');

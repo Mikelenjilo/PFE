@@ -4,7 +4,7 @@ class UserInfoController extends GetxController {
   late int userId;
   String? firstName;
   String? lastName;
-  DateTime? dateOfBirth;
+  String? dateOfBirth;
   String? email;
   String? password;
   String? cronicDisease1;
@@ -16,7 +16,7 @@ class UserInfoController extends GetxController {
   double? latitude;
   double? longitude;
   bool? ifTransmit;
-  DateTime? dateOfContamination;
+  String? dateOfContamination;
   List<Map<String, num>>? recommandation;
   bool? online;
   int clusterId = 0;
