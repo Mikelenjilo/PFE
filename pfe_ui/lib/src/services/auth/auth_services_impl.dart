@@ -53,21 +53,8 @@ class AuthImpl implements IAuth {
     try {
       final User user = await DjangoHelper.getUserByEmail(email);
 
-      final Map<String, String> data = {'email': email};
-      final String encodedData = jsonEncode(data);
-      final Uri url = Uri.parse(DjangoConstants.patchLoginUserUrl);
-      final http.Response response = await http.patch(
-        url,
-        body: encodedData,
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        user.online = true;
-        return user;
-      } else {
-        throw Exception('Error : ${response.statusCode}');
-      }
+      user.online = true;
+      return user;
     } on Exception catch (exception) {
       throw Exception('Error : $exception');
     }

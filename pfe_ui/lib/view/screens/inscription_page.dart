@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/controller/inscription_controller.dart';
-import 'package:pfe_ui/view/screens/app_page.dart';
 import 'package:pfe_ui/view/widgets/custom_drop_downbuttom_field.dart';
 import 'package:pfe_ui/view/widgets/custom_text_field.dart';
 
@@ -50,9 +49,10 @@ class InscriptionPage1 extends StatelessWidget {
                   const SizedBox(height: 13.0),
                   CustomTextField(
                     controller: emailController,
-                    text: 'email',
+                    text: 'Email',
                     hintText: 'Entrez votre adresse email',
                     keyboardType: TextInputType.emailAddress,
+                    icon: Icons.email,
                   ),
                   const SizedBox(height: 13.0),
                   CustomTextField(
@@ -60,6 +60,7 @@ class InscriptionPage1 extends StatelessWidget {
                     text: 'Mot de passe',
                     hintText: 'Mot de passe',
                     obscureText: true,
+                    icon: Icons.lock,
                   ),
                   const SizedBox(height: 13.0),
                   CustomTextField(
@@ -67,6 +68,7 @@ class InscriptionPage1 extends StatelessWidget {
                     text: 'Confirmer mot de passe',
                     hintText: 'Mot de passe',
                     obscureText: true,
+                    icon: Icons.lock,
                   )
                 ],
               ),
@@ -147,12 +149,14 @@ class InscriptionPage2 extends StatelessWidget {
                     controller: lastNameController,
                     text: 'Nom',
                     hintText: 'Entrez votre nom',
+                    icon: Icons.person,
                   ),
                   const SizedBox(height: 13.0),
                   CustomTextField(
                     controller: firstNameController,
                     text: 'Prénom',
                     hintText: 'Entrez votre prénom',
+                    icon: Icons.person,
                   ),
                   const SizedBox(height: 13.0),
                   GestureDetector(
@@ -173,6 +177,7 @@ class InscriptionPage2 extends StatelessWidget {
                         controller: dateOfBirthController,
                         text: 'Date de naissance',
                         hintText: 'aaaa-mm-jj',
+                        icon: Icons.calendar_today_outlined,
                       ),
                     ),
                   ),
@@ -219,6 +224,9 @@ class InscriptionPage2 extends StatelessWidget {
 }
 
 class InscriptionPage3 extends StatelessWidget {
+  static const List<String> options = ['Oui', 'Non'];
+
+  InscriptionPage3({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,7 +252,7 @@ class InscriptionPage3 extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 100.0),
+          const SizedBox(height: 30.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -253,41 +261,119 @@ class InscriptionPage3 extends StatelessWidget {
                 const Text(
                   'Est-ce que vous êtes malade du COVID-19 ?',
                   style: TextStyle(
-                    fontSize: 28.0,
+                    fontSize: 22.0,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 60.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await controller.setInfoPage3(
-                            dateOfContamination:
-                                DateTime.now().toString().split(' ')[0]);
-                        Get.to(() => const AppPage());
-                      },
-                      child: Text('Oui',
-                          style: kTextStyleTitle.copyWith(
-                              color: Colors.white, fontSize: 30.0)),
+                Obx(
+                  () => SizedBox(
+                    height: 50, // Specify a specific height here
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: ListTile(
+                            title: const Text('Oui'),
+                            leading: Radio<String>(
+                              value: 'Oui',
+                              groupValue: controller.selectedValue.value,
+                              onChanged: (value) {
+                                controller.selectedValue.value = value!;
+                                print(controller.selectedValue.value);
+                              },
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: ListTile(
+                            title: const Text('Non'),
+                            leading: Radio<String>(
+                              value: 'Non',
+                              groupValue: controller.selectedValue.value,
+                              onChanged: (value) {
+                                controller.selectedValue.value = value!;
+                                print(controller.selectedValue.value);
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10.0),
-                    ElevatedButton(
-                      onPressed: () {
-                        controller.setInfoPage3();
-                        Get.to(() => const AppPage());
-                      },
-                      child: Text('Non',
-                          style: kTextStyleTitle.copyWith(
-                              color: Colors.white, fontSize: 30.0)),
-                    ),
-                  ],
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                const Text(
+                  'Si vous avez une maladie chronique, veuillez la sélectionner :',
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    color: Colors.black,
+                  ),
+                ),
+                Obx(
+                  () => Column(
+                    children: [
+                      CheckboxListTile(
+                        title: Text('Diabète'),
+                        value: controller.diabete.value,
+                        controlAffinity: ListTileControlAffinity.platform,
+                        onChanged: (bool? value) {
+                          controller.diabete.value = value!;
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: Text('Cancer'),
+                        value: controller.cancer.value,
+                        controlAffinity: ListTileControlAffinity.platform,
+                        onChanged: (bool? value) {
+                          controller.cancer.value = value!;
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: Text('Maladies Cardiaques'),
+                        value: controller.maladiesCardiaques.value,
+                        controlAffinity: ListTileControlAffinity.platform,
+                        onChanged: (bool? value) {
+                          controller.maladiesCardiaques.value = value!;
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: Text('Maladies Rénales'),
+                        value: controller.maladiesRenales.value,
+                        controlAffinity: ListTileControlAffinity.platform,
+                        onChanged: (bool? value) {
+                          controller.maladiesRenales.value = value!;
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: Text('Maladie Respiratoire'),
+                        value: controller.maladieRespiratoire.value,
+                        controlAffinity: ListTileControlAffinity.platform,
+                        onChanged: (bool? value) {
+                          controller.maladieRespiratoire.value = value!;
+                        },
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 20.0),
+          Container(
+            width: 250,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1273EB),
+                minimumSize: const Size(double.infinity, 50.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Enregistrer'),
+            ),
+          ),
         ],
       ),
     );

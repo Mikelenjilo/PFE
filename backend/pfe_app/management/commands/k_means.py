@@ -7,6 +7,6 @@ class Command(BaseCommand):
     help = 'Generates random data for the utilisateurs and utilisateurs_malade tables'
 
     def handle(self, *args, **options):
-        kmeans(4)
+        kmeans(8)
             
 

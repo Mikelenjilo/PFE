@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:pfe_ui/controller/inscription_controller.dart';
 import 'package:pfe_ui/controller/map_controller.dart';
 import 'package:pfe_ui/view/widgets/custom_loading_indicator.dart';
 
 final mapController = Get.find<MapAppController>();
-final userInfoController = Get.find<InscriptionController>();
 
 class MapPage extends StatelessWidget {
-  const MapPage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,8 +46,10 @@ class MapPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await mapController.getLocation();
-          await mapController.populateMarkers();
           await mapController.getRecommandations();
+          await mapController.populateMarkersWithUsersLocation();
+
+          // await mapController.getRecommandations();
         },
         child: const Icon(Icons.gps_fixed),
       ),

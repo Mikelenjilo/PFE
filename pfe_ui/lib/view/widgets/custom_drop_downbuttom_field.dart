@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomDropDownButtomField extends StatelessWidget {
   final Function(String?)? genderLogic;
@@ -20,6 +21,11 @@ class CustomDropDownButtomField extends StatelessWidget {
           child: DropdownButtonFormField(
             decoration: kInputDecoration.copyWith(
               hintText: 'Entrez votre genre',
+              prefixIcon: const Icon(
+                FontAwesomeIcons.venusMars,
+                color: Colors.grey,
+                size: 20,
+              ),
             ),
             items: const [
               DropdownMenuItem(

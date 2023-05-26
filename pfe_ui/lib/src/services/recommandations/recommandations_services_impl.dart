@@ -1,25 +1,23 @@
 import 'package:get/get.dart';
-import 'package:pfe_ui/controller/user_info_controller.dart';
+import 'package:pfe_ui/controller/recommandation_controller.dart';
+import 'package:pfe_ui/core/services/shared_preferences_services.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
 import 'package:pfe_ui/src/services/recommandations/recommandations_services.dart';
 
-final UserInfoController userInfoController = Get.find<UserInfoController>();
+final RecommandationController recommandationController =
+    Get.find<RecommandationController>();
 
 class RecommandationServicesImpl implements IRecommandationsServices {
   @override
   void getRecommandations(List<Cluster> clusters) {
-    userInfoController.recommandation = [];
+    final double avgFactorDisease = _avgCronicFactors();
+    final DateTime dateOfBirthInDateTime =
+        DateTime.parse(SharedPreferencesService.getDateOfBirth());
+    int age = DateTime.now().year - dateOfBirthInDateTime.year;
+    double factorAge = _factorAge(age);
+
     for (final cluster in clusters) {
       final double spreadRate = cluster.spreadRate;
-      print('spread rate: $spreadRate');
-      final double avgFactorDisease = _avgCronicFactors();
-      print('avg factor disease: $avgFactorDisease');
-      final DateTime dateOfBirthInDateTime =
-          DateTime.parse(userInfoController.dateOfBirth!);
-      int age = DateTime.now().year - dateOfBirthInDateTime.year;
-      print('age: $age');
-      double factorAge = _factorAge(age);
-      print('factor age: $factorAge');
 
       double recommendation = (spreadRate * avgFactorDisease * factorAge);
 
@@ -27,18 +25,17 @@ class RecommandationServicesImpl implements IRecommandationsServices {
         'clusterId': cluster.clusterId,
         'recommendation': recommendation,
       };
-      userInfoController.recommandation?.add(recommandationMap);
+      recommandationController.recommandation.add(recommandationMap);
     }
-    print('recommandations: ${userInfoController.recommandation}');
   }
 }
 
 double _avgCronicFactors() {
-  String? cronicDisease1 = userInfoController.cronicDisease1;
-  String? cronicDisease2 = userInfoController.cronicDisease2;
-  String? cronicDisease3 = userInfoController.cronicDisease3;
-  String? cronicDisease4 = userInfoController.cronicDisease4;
-  String? cronicDisease5 = userInfoController.cronicDisease5;
+  String? cronicDisease1 = SharedPreferencesService.getCronicDisease1();
+  String? cronicDisease2 = SharedPreferencesService.getCronicDisease2();
+  String? cronicDisease3 = SharedPreferencesService.getCronicDisease3();
+  String? cronicDisease4 = SharedPreferencesService.getCronicDisease4();
+  String? cronicDisease5 = SharedPreferencesService.getCronicDisease5();
 
   double? factorDisease1 = _factorDisease(cronicDisease1);
   double? factorDisease2 = _factorDisease(cronicDisease2);
@@ -73,7 +70,7 @@ double _factorDisease(String? disease) {
       return 0.6;
     case 'maladies renales':
       return 0.4;
-    case null:
+    case '':
       return 0.05;
     default:
       throw Exception('Disease not found');

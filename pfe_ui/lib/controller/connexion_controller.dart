@@ -14,7 +14,7 @@ class ConnexionController extends GetxController {
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$';
     RegExp regex = RegExp(emailRegex);
     if (email.isEmpty) {
-      showError('Veuillez entrer votre email');
+      showError('Veuillez remplir tous les champs');
     } else if (!regex.hasMatch(email)) {
       showError('Veuillez entrer un email valide');
     } else if (!(await DjangoHelper.isEmailExist(email))) {
@@ -34,14 +34,12 @@ class ConnexionController extends GetxController {
   }) async {
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$';
     RegExp regex = RegExp(emailRegex);
-    if (email.isEmpty) {
-      showError('Veuillez entrer votre email');
+    if (email.isEmpty || password.isEmpty) {
+      showError('Veuillez remplir tous les champs');
     } else if (!regex.hasMatch(email)) {
       showError('Veuillez entrer un email valide');
     } else if (!(await DjangoHelper.isEmailExist(email))) {
       showError('Cet email n\'existe pas');
-    } else if (password.isEmpty) {
-      showError('Veuillez entrer votre mot de passe');
     } else {
       final user = await DjangoHelper.getUserByEmail(email);
       if (user.password == password) {

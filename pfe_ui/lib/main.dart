@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/app_bindings.dart';
 import 'package:pfe_ui/core/services/shared_preferences_services.dart';
-import 'package:pfe_ui/view/screens/connexion_page.dart';
+import 'package:pfe_ui/view/screens/app_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +15,7 @@ class EpidemicZone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: const Connexion(),
+      home: const AppPage(),
       debugShowCheckedModeBanner: false,
       initialBinding: AppBindings(),
     );

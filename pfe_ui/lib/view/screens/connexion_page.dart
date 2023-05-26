@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:pfe_ui/controller/connexion_controller.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
-import 'package:pfe_ui/view/screens/inscription_page.dart';
+import 'package:pfe_ui/view/widgets/custom_text_field.dart';
 
 final connexionController = Get.find<ConnexionController>();
 
@@ -40,68 +40,86 @@ class Connexion extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
-                        top: 20.0, left: 30.0, right: 30.0),
+                      top: 20.0,
+                      left: 30.0,
+                      right: 30.0,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 13.0),
-                        TextFormField(
-                          keyboardType: TextInputType.emailAddress,
+                        CustomTextField(
+                          text: 'Email',
+                          hintText: 'Entrez votre adresse email',
                           controller: emailController,
-                          decoration: const InputDecoration(
-                            hintText: "Entrez votre adresse email",
-                          ),
+                          icon: Icons.email,
                         ),
                         const SizedBox(height: 13.0),
-                        TextFormField(
-                          obscureText: true,
+                        CustomTextField(
+                          text: 'Mot de passe',
+                          hintText: 'Entrez votre mot de passe',
                           controller: passwordController,
-                          decoration: const InputDecoration(
-                            hintText: "Mot de passe",
-                          ),
+                          obscureText: true,
+                          icon: Icons.lock,
                         ),
+                        // TextFormField(
+                        //   keyboardType: TextInputType.emailAddress,
+                        //   controller: emailController,
+                        //   decoration: const InputDecoration(
+                        //     hintText: "Entrez votre adresse email",
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 13.0),
+                        // TextFormField(
+                        //   obscureText: true,
+                        //   controller: passwordController,
+                        //   decoration: const InputDecoration(
+                        //     hintText: "Mot de passe",
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(
+                      top: 20.0,
+                      left: 30.0,
+                      right: 30.0,
+                    ),
                     child: Center(
                       child: Column(
                         children: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              final bool isSignedIn =
-                                  await connexionController.setSignInInfo(
-                                email: emailController.text,
-                                password: passwordController.text,
-                              );
-                              if (isSignedIn) {
-                                Get.to(() => const AppPage());
-                              }
-                            },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue),
+                          SizedBox(
+                            height: 50,
+                            width: double.maxFinite,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                final bool isSignedIn =
+                                    await connexionController.setSignInInfo(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                );
+                                if (isSignedIn) {
+                                  Get.to(() => const AppPage());
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                              ),
+                              child: const Text('Se connecter'),
                             ),
-                            child: const Text('Connexion'),
                           ),
+                          const SizedBox(height: 10.0),
                           TextButton(
                             onPressed: () {},
                             child: const Text(
                               'Mot de passe oublié ?',
                               style: TextStyle(
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.to(() => const InscriptionPage1());
-                            },
-                            child: const Text(
-                              'Vous n\'avez pas de compte ?',
-                              style: TextStyle(
-                                color: Colors.blue,
+                                color: Colors.black,
                               ),
                             ),
                           ),

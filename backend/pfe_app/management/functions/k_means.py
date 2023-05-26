@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from haversine import haversine, Unit
 from pfe_app.management.functions.remove_clusters import removeCluster
+from pfe_app.management.functions.spread_rate import spread_rate
 
 from pfe_app.models import User, Cluster
 
@@ -18,6 +19,12 @@ def kmeans(numberOfClusters):
     
     create_clusters(kmeans, numberOfClusters)
     assign_cluster(kmeans, numberOfClusters)
+    spread_rate()
+
+    plot_data(kmeans, data)
+    
+
+
 
     return kmeans
 
@@ -51,18 +58,18 @@ def create_clusters(kmeans, numberOfClusters):
         
         for user in users_in_cluster:
             user_loc = (user.latitude, user.longitude)
-            centroid_loc = (centroid[0], centroid[1])
-            distance = haversine(user_loc, centroid_loc, unit=Unit.METERS)
+            centroid_loc = (centroid[1], centroid[0])
+            distance = haversine(user_loc, centroid_loc, unit=Unit.KILOMETERS)
             distances.append(distance)
 
-        radius = max(distances)
+        radius = sum(distances) / len(distances)
 
         spread_rate = None
         
         cluster = Cluster(cluster_id=i+1, number_of_users=number_of_users, number_of_sick_users=number_of_sick_users,
-                          centroid_latitude=centroid[1], centroid_longitude=centroid[0], color=color,
-                          radius=radius, spread_rate=spread_rate)
+                          centroid_latitude=centroid[1], centroid_longitude=centroid[0], radius=radius, spread_rate=spread_rate)
         cluster.save()
+
 
 
 def assign_cluster(kmeans, numberOfClusters):
@@ -79,3 +86,19 @@ def assign_cluster(kmeans, numberOfClusters):
 
 
 
+def plot_data(kmeans, data):
+    labels = kmeans.labels_
+    
+    # Plot users in each cluster with different colors
+    for i in range(len(np.unique(labels))):
+        cluster_data = data[labels == i]
+        plt.scatter(cluster_data[:, 0], cluster_data[:, 1], label=f'Cluster {i+1}')
+    
+    # Plot cluster centers with marker 'x'
+    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], color='red', marker='x', label='Centroids')
+    
+    plt.title('K-means Clustering')
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.legend()
+    plt.show()

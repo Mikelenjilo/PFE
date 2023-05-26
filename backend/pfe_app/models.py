@@ -1,6 +1,10 @@
 import datetime
 from django.db import models
 
+def get_default_cluster_id():
+    default_cluster = Cluster.objects.get(cluster_id=0)
+    return default_cluster.pk
+
 # Create your models here.
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
@@ -17,11 +21,10 @@ class User(models.Model):
     gender = models.CharField(max_length=50)
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
-    cluster_id = models.ForeignKey('Cluster', on_delete=models.CASCADE)
+    cluster_id = models.ForeignKey('Cluster', on_delete=models.CASCADE, default=get_default_cluster_id)
     if_transmit = models.BooleanField(null=True)
     date_of_contamination = models.DateField(null=True)
     recommandation = models.FloatField(null=True)
-    online = models.BooleanField(null=True)
 
     class Meta:
         constraints = [
@@ -30,7 +33,7 @@ class User(models.Model):
 
 
 class Cluster(models.Model):
-    cluster_id = models.IntegerField(primary_key=True)
+    cluster_id = models.IntegerField(primary_key=True, default=0)
     number_of_users = models.IntegerField()
     number_of_sick_users = models.IntegerField()
     centroid_latitude = models.FloatField()

@@ -5,18 +5,8 @@ import 'package:pfe_ui/view/screens/connexion_page.dart';
 import 'package:pfe_ui/view/screens/update_info_page.dart';
 import 'package:pfe_ui/view/widgets/profile_info_item.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

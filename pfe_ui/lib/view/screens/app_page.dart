@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/app_page_controller.dart';
 import 'package:pfe_ui/view/screens/map_page.dart';
-import 'package:pfe_ui/view/screens/profile_page.dart';
+import 'package:pfe_ui/view/screens/profile_page_2.dart';
 import 'package:pfe_ui/view/screens/recommandation_page.dart';
 
 class AppPage extends StatelessWidget {
@@ -16,10 +16,10 @@ class AppPage extends StatelessWidget {
         body: SafeArea(
           child: IndexedStack(
             index: controller.currentIndex,
-            children: const [
+            children: [
               MapPage(),
               RecommendationsPage(),
-              ProfilePage(),
+              ProfilePage2(),
             ],
           ),
         ),

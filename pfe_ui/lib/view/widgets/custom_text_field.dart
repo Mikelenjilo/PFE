@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType? keyboardType;
   final bool obscureText;
+  final IconData? icon;
 
   const CustomTextField({
     super.key,
@@ -15,6 +16,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.keyboardType,
     this.obscureText = false,
+    this.icon,
   });
 
   @override
@@ -32,6 +34,7 @@ class CustomTextField extends StatelessWidget {
           style: kTextStyleTextField,
           decoration: kInputDecoration.copyWith(
             hintText: hintText,
+            prefixIcon: Icon(icon),
           ),
           controller: controller,
           obscureText: obscureText,

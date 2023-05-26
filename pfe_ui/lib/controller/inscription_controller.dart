@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:pfe_ui/controller/user_info_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
 import 'package:pfe_ui/core/services/shared_preferences_services.dart';
 import 'package:pfe_ui/src/models/user.dart';
@@ -14,6 +13,12 @@ class InscriptionController extends GetxController {
   late String password;
   late String gender;
   String? dateOfContamination;
+  RxString selectedValue = ''.obs;
+  RxBool diabete = false.obs;
+  RxBool cancer = false.obs;
+  RxBool maladiesCardiaques = false.obs;
+  RxBool maladiesRenales = false.obs;
+  RxBool maladieRespiratoire = false.obs;
 
   setFirstName(String value) {
     firstName = value;
@@ -37,14 +42,8 @@ class InscriptionController extends GetxController {
     }
   }
 
-  bool setPassword(String password, String passwordConfirmation) {
-    if (password != passwordConfirmation) {
-      showError('Les mots de passe ne correspondent pas');
-      return false;
-    } else {
-      this.password = password;
-      return true;
-    }
+  void setPassword(String password, String passwordConfirmation) {
+    this.password = password;
   }
 
   void setGender(String gender) {
@@ -62,18 +61,16 @@ class InscriptionController extends GetxController {
   }) async {
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$';
     RegExp regex = RegExp(emailRegex);
-    if (email.isEmpty) {
-      showError('Veuillez entrer votre email');
+    if (email.isEmpty || password.isEmpty || passwordConfrimation.isEmpty) {
+      showError('Veuillez remplir tous les champs');
     } else if (!regex.hasMatch(email)) {
       showError('Veuillez entrer un email valide');
     } else if (await DjangoHelper.isEmailExist(email)) {
       showError('Cet email existe déjà');
-    } else if (password.isEmpty) {
-      showError('Veuillez entrer votre mot de passe');
-    } else if (passwordConfrimation.isEmpty) {
-      showError('Veuillez confirmer votre mot de passe');
     } else if (password.length < 6) {
       showError('Le mot de passe doit contenir au moins 6 caractères');
+    } else if (password != passwordConfrimation) {
+      showError('Les mots de passe ne correspondent pas');
     } else {
       await setEmail(email);
       setPassword(password, passwordConfrimation);
@@ -90,12 +87,8 @@ class InscriptionController extends GetxController {
   }) {
     String dateRegex = r'^\d{4}-\d{2}-\d{2}$';
     RegExp regex = RegExp(dateRegex);
-    if (firstName.isEmpty) {
-      showError('Veuillez entrer votre prénom');
-    } else if (lastName.isEmpty) {
-      showError('Veuillez entrer votre nom');
-    } else if (dateOfBirth.isEmpty) {
-      showError('Veuillez entrer votre date de naissance');
+    if (firstName.isEmpty || lastName.isEmpty || dateOfBirth.isEmpty) {
+      showError('Veuillez remplir tous les champs');
     } else if (DateTime.now().year - DateTime.parse(dateOfBirth).year >= 120) {
       showError(
           'Veuillez entre une date de naissance valide, vous devez avoir moins de 120 ans');
@@ -119,16 +112,17 @@ class InscriptionController extends GetxController {
   Future<void> setInfoPage3({
     String? dateOfContamination,
   }) async {
-    if (dateOfContamination != null) {
-      setDateOfContamination(dateOfContamination);
+    if (selectedValue.value == 'Oui') {
+      setDateOfContamination(DateTime.now().toString().split(' ')[0]);
+      await inscription();
+    } else if (selectedValue.value == 'Non') {
       await inscription();
     } else {
-      inscription();
+      showError('Veuillez choisir une réponse');
     }
   }
 
   Future<void> inscription() async {
-    Get.find<UserInfoController>();
     final User? user = await AuthImpl().registerInWithEmailAndPassword(
       email: email,
       password: password,

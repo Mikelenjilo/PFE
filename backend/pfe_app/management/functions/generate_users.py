@@ -5,17 +5,21 @@ from pfe_app.models import Cluster, User
 
 
 regions = {
-    'South-East Algeria': {'lat_range': (19.30761, 24.32125), 'lon_range': (7.532, 11.99872)},
-    'Sahara region': {'lat_range': (22.64684, 31.6316), 'lon_range': (-7.621, 11.7487)},
-    'North-East Algeria': {'lat_range': (34.33387, 36.98466), 'lon_range': (5.83333, 8.82256)},
-    'North-Central Algeria': {'lat_range': (35.02261, 36.85661), 'lon_range': (2.07988, 5.50536)},
-    'North-West Algeria': {'lat_range': (34.2089, 35.13814), 'lon_range': (-1.20544, 1.79107)}
+    'Zone 1': {'lat_range': (19.0, 24.5), 'lon_range': (-8.0, 3.0)},
+    'Zone 2': {'lat_range': (27.0, 37.0), 'lon_range': (-9.0, 12.0)},
+    'Zone 3': {'lat_range': (34.0, 37.0), 'lon_range': (2.0, 9.0)},
+    'Zone 4': {'lat_range': (35.0, 37.0), 'lon_range': (1.0, 7.0)},
+    'Zone 5': {'lat_range': (32.0, 36.0), 'lon_range': (-2.0, 4.0)},
+    'Zone 6': {'lat_range': (26.0, 27.0), 'lon_range': (0.0, 8.0)},
+    'Zone 7': {'lat_range': (26.0, 30.0), 'lon_range': (2.0, 6.0)},
+    'Zone 8': {'lat_range': (28.0, 32.0), 'lon_range': (0.0, 4.0)}
+
 }
 
 diseases = ['maladies renales', 'cancer', 'diabete', 'maladies respiratoires', 'maladies cardiaques', None]
 
 def generateUsers():
-    for i in range(500):
+    for i in range(1000):
                 first_name = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=5))
                 last_name = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=5))
                 date_of_birth = (datetime.now() - timedelta(days=random.randint(0, 15000))).strftime('%Y-%m-%d')
@@ -46,7 +50,7 @@ def generateUsers():
                 diseases = ['maladies renales', 'cancer', 'diabete', 'maladies respiratoires', 'maladies cardiaques', None, None, None]
                 gender = random.choice(['Homme', 'Femme'])
 
-                region = random.choices(list(regions.keys()), weights=[5, 2, 20, 15, 8], k=1)[0]
+                region = random.choices(list(regions.keys()), weights=[5, 2, 20, 15, 8, 5, 5, 5], k=1)[0]
 
                 latitude = random.uniform(*regions[region]['lat_range'])
                 longitude = random.uniform(*regions[region]['lon_range'])
