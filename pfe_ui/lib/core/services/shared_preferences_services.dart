@@ -21,38 +21,11 @@ class SharedPreferencesService {
   static Future setEmail(String email) async =>
       await _preferences.setString('email', email);
 
-  static Future setPassword(String password) async =>
-      await _preferences.setString('password', password);
-
-  static Future setCronicDisease1(String cronicDisease1) async =>
-      await _preferences.setString('cronicDisease1', cronicDisease1);
-
-  static Future setCronicDisease2(String cronicDisease2) async =>
-      await _preferences.setString('cronicDisease2', cronicDisease2);
-
-  static Future setCronicDisease3(String cronicDisease3) async =>
-      await _preferences.setString('cronicDisease3', cronicDisease3);
-
-  static Future setCronicDisease4(String cronicDisease4) async =>
-      await _preferences.setString('cronicDisease4', cronicDisease4);
-
-  static Future setCronicDisease5(String cronicDisease5) async =>
-      await _preferences.setString('cronicDisease5', cronicDisease5);
+  static Future setCronicDiseases(List<String> cronicDiseases) async =>
+      await _preferences.setStringList('cronicDiseases', cronicDiseases);
 
   static Future setGender(String gender) async =>
       await _preferences.setString('gender', gender);
-
-  static Future setLatitude(double latitude) async =>
-      await _preferences.setDouble('latitude', latitude);
-
-  static Future setLongitude(double longitude) async =>
-      await _preferences.setDouble('longitude', longitude);
-
-  static Future setIfTransmit(bool ifTransmit) async =>
-      await _preferences.setBool('ifTransmit', ifTransmit);
-
-  static Future setDateOfContamination(String dateOfContamination) async =>
-      await _preferences.setString('dateOfContamination', dateOfContamination);
 
   static Future setOnline(bool online) async =>
       await _preferences.setBool('online', online);
@@ -72,35 +45,10 @@ class SharedPreferencesService {
 
   static String getEmail() => _preferences.getString('email') ?? '';
 
-  static String getPassword() => _preferences.getString('password') ?? '';
-
-  static String getCronicDisease1() =>
-      _preferences.getString('cronicDisease1') ?? '';
-
-  static String getCronicDisease2() =>
-      _preferences.getString('cronicDisease2') ?? '';
-
-  static String getCronicDisease3() =>
-      _preferences.getString('cronicDisease3') ?? '';
-
-  static String getCronicDisease4() =>
-      _preferences.getString('cronicDisease4') ?? '';
-
-  static String getCronicDisease5() =>
-      _preferences.getString('cronicDisease5') ?? '';
+  static List<String>? getCronicDiseases() =>
+      _preferences.getStringList('cronicDiseases');
 
   static String getGender() => _preferences.getString('gender') ?? '';
-
-  static double getLatitude() => _preferences.getDouble('latitude') ?? 0.0;
-
-  static double getLongitude() => _preferences.getDouble('longitude') ?? 0.0;
-
-  static bool getIfTransmit() => _preferences.getBool('ifTransmit') ?? false;
-
-  static String getDateOfContamination() =>
-      _preferences.getString('dateOfContamination') ?? '';
-
-  static bool getOnline() => _preferences.getBool('online') ?? false;
 
   static int getClusterId() => _preferences.getInt('clusterId') ?? 0;
 

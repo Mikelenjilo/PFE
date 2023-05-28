@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
-import 'package:pfe_ui/core/services/shared_preferences_services.dart';
+import 'package:pfe_ui/main.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
 import 'package:pfe_ui/view/widgets/error_widget.dart';
@@ -57,26 +58,13 @@ class ConnexionController extends GetxController {
   Future<void> signIn() async {
     final User user =
         await AuthImpl().signInWithEmailAndPassword(email, password);
+    print(Get.find<UserController>().user);
+    Get.find<UserController>().setUser(user);
+    print(user);
+    print(Get.find<UserController>().user);
 
-    SharedPreferencesService.setUserId(user.userId);
-    SharedPreferencesService.setFirstName(user.firstName);
-    SharedPreferencesService.setLastName(user.lastName);
-    SharedPreferencesService.setDateOfBirth(user.dateOfBirth);
-    SharedPreferencesService.setEmail(user.email);
-    SharedPreferencesService.setPassword(user.password);
-    SharedPreferencesService.setCronicDisease1(user.cronicDisease1 ?? '');
-    SharedPreferencesService.setCronicDisease2(user.cronicDisease2 ?? '');
-    SharedPreferencesService.setCronicDisease3(user.cronicDisease3 ?? '');
-    SharedPreferencesService.setCronicDisease4(user.cronicDisease4 ?? '');
-    SharedPreferencesService.setCronicDisease5(user.cronicDisease5 ?? '');
-    SharedPreferencesService.setGender(user.gender);
-    SharedPreferencesService.setLatitude(user.latitude ?? 0.0);
-    SharedPreferencesService.setLongitude(user.longitude ?? 0.0);
-    SharedPreferencesService.setIfTransmit(user.ifTransmit ?? false);
-    SharedPreferencesService.setDateOfContamination(
-        user.dateOfContamination ?? '');
-    SharedPreferencesService.setOnline(user.online ?? false);
-    SharedPreferencesService.setClusterId(user.clusterId);
+    prefs!.setInt('id', user.userId);
+    print(prefs!.getInt('id'));
 
     Get.snackbar(
       'Connexion réussie',

@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 
 import 'package:pfe_ui/core/services/django_helper.dart';
+import 'package:pfe_ui/core/services/shared_preferences_services.dart';
 import 'package:pfe_ui/core/utils/database_constants.dart';
+import 'package:pfe_ui/src/models/cluster.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services.dart';
 
 class AuthImpl implements IAuth {
   @override
-  Future<User?> registerInWithEmailAndPassword({
+  Future<User> registerInWithEmailAndPassword({
     required String email,
     required String password,
     required String firstName,
@@ -38,10 +41,11 @@ class AuthImpl implements IAuth {
       );
 
       if (response.statusCode == 201) {
-        final User user = User.fromJson(jsonDecode(response.body));
+        final User user = await DjangoHelper.getUserByEmail(email);
+        user.online = true;
         return user;
       } else {
-        return null;
+        throw Exception('Error : ${response.statusCode}');
       }
     } on Exception catch (failure) {
       throw Exception('Error : $failure');
@@ -77,6 +81,39 @@ class AuthImpl implements IAuth {
       }
     } on Exception catch (exception) {
       throw Exception('Error : $exception');
+    }
+  }
+
+  @override
+  Future<void> updateCronicDiseases({
+    required User user,
+    required List<String> diseases,
+  }) async {
+    user.cronicDiseases = diseases;
+    await DjangoHelper.patchUpdateUserCronicDiseases(
+      userId: user.userId,
+      cronicDiseases: diseases,
+    );
+  }
+
+  @override
+  Future<void> assignUserToClosestCluster(User user) async {
+    LatLng userLocation =
+        LatLng(user.location!.latitude, user.location!.longitude);
+    List<Cluster> clusters = await DjangoHelper.getClusters();
+
+    double distance1 = 1000000000.0;
+    for (var cluster in clusters) {
+      LatLng clusterCentroidLocation = LatLng(cluster.centroidPosition.latitude,
+          cluster.centroidPosition.longitude);
+
+      double distance2 = const Distance()
+          .as(LengthUnit.Meter, userLocation, clusterCentroidLocation);
+
+      if (distance2 < distance1) {
+        distance1 = distance2;
+        user.clusterId = cluster.clusterId;
+      }
     }
   }
 }

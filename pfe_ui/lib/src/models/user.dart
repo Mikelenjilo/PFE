@@ -1,3 +1,5 @@
+import 'package:latlong2/latlong.dart';
+
 class User {
   int userId;
 
@@ -6,19 +8,14 @@ class User {
   String dateOfBirth;
   String email;
   String password;
-  String? cronicDisease1;
-  String? cronicDisease2;
-  String? cronicDisease3;
-  String? cronicDisease4;
-  String? cronicDisease5;
+  List<String?>? cronicDiseases;
   String gender;
-  double? latitude;
-  double? longitude;
+  LatLng? location;
   bool? ifTransmit;
   String? dateOfContamination;
   List<Map<String, num>>? recommandation;
   int clusterId = 0;
-  bool? online;
+  bool online;
 
   User({
     required this.userId,
@@ -27,14 +24,9 @@ class User {
     required this.dateOfBirth,
     required this.email,
     required this.password,
-    this.cronicDisease1,
-    this.cronicDisease2,
-    this.cronicDisease3,
-    this.cronicDisease4,
-    this.cronicDisease5,
+    this.cronicDiseases,
     required this.gender,
-    this.latitude,
-    this.longitude,
+    this.location,
     this.ifTransmit = false,
     this.dateOfContamination,
     this.recommandation,
@@ -49,13 +41,13 @@ class User {
       'dateOfBirth': dateOfBirth,
       'email': email,
       'password': password,
-      'cronic_disease_1': cronicDisease1,
-      'cronic_disease_2': cronicDisease2,
-      'cronic_disease_3': cronicDisease3,
-      'cronic_disease_4': cronicDisease4,
-      'cronic_disease_5': cronicDisease5,
-      'latitude': latitude,
-      'longitude': longitude,
+      'cronic_disease_1': cronicDiseases?[0],
+      'cronic_disease_2': cronicDiseases?[1],
+      'cronic_disease_3': cronicDiseases?[2],
+      'cronic_disease_4': cronicDiseases?[3],
+      'cronic_disease_5': cronicDiseases?[4],
+      'latitude': location?.latitude,
+      'longitude': location?.longitude,
       'gender': gender,
       'date_of_contamination': dateOfContamination,
       'if_transmit': ifTransmit,
@@ -64,7 +56,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(user_id: $userId, first_name: $firstName, last_name: $lastName, dateOfBirth: $dateOfBirth, email: $email, password: $password, cronic_disease_1: $cronicDisease1, cronic_disease_2: $cronicDisease2, cronic_disease_3: $cronicDisease3, cronic_disease_4: $cronicDisease4, cronic_disease_5: $cronicDisease5, latitude: $latitude, longitude: $longitude, gender: $gender, date_of_contamination: $dateOfContamination, if_transmit: $ifTransmit, cluster_id: $clusterId)';
+    return 'User(user_id: $userId, first_name: $firstName, last_name: $lastName, dateOfBirth: $dateOfBirth, email: $email, password: $password, cronic_disease_1: ${cronicDiseases?[0]}, cronic_disease_2: ${cronicDiseases?[1]}, cronic_disease_3: ${cronicDiseases?[2]}, cronic_disease_4: ${cronicDiseases?[3]}, cronic_disease_5: ${cronicDiseases?[4]}, latitude: ${location?.latitude}, longitude: ${location?.longitude}, gender: $gender, date_of_contamination: $dateOfContamination, if_transmit: $ifTransmit, cluster_id: $clusterId)';
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -76,17 +68,20 @@ class User {
       email: json['email'],
       password: json['password'],
       gender: json['gender'],
-      cronicDisease1: json['cronic_disease_1'],
-      cronicDisease2: json['cronic_disease_2'],
-      cronicDisease3: json['cronic_disease_3'],
-      cronicDisease4: json['cronic_disease_4'],
-      cronicDisease5: json['cronic_disease_5'],
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      cronicDiseases: [
+        json['cronic_disease_1'],
+        json['cronic_disease_2'],
+        json['cronic_disease_3'],
+        json['cronic_disease_4'],
+        json['cronic_disease_5'],
+      ],
+      location: LatLng(
+        json['latitude'] ?? 0,
+        json['longitude'] ?? 0,
+      ),
       dateOfContamination: json['date_of_contamination'],
       ifTransmit: json['if_transmit'],
       clusterId: json['cluster_id'],
-      online: json['online'],
     );
 
     // maassi@gmail.com

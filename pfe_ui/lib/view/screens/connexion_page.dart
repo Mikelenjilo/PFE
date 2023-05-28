@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pfe_ui/controller/connexion_controller.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
+import 'package:pfe_ui/view/screens/mot_de_passe_oublie.dart';
 import 'package:pfe_ui/view/widgets/custom_text_field.dart';
 
 final connexionController = Get.find<ConnexionController>();
@@ -62,21 +63,6 @@ class Connexion extends StatelessWidget {
                           obscureText: true,
                           icon: Icons.lock,
                         ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.emailAddress,
-                        //   controller: emailController,
-                        //   decoration: const InputDecoration(
-                        //     hintText: "Entrez votre adresse email",
-                        //   ),
-                        // ),
-                        // const SizedBox(height: 13.0),
-                        // TextFormField(
-                        //   obscureText: true,
-                        //   controller: passwordController,
-                        //   decoration: const InputDecoration(
-                        //     hintText: "Mot de passe",
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
@@ -115,7 +101,9 @@ class Connexion extends StatelessWidget {
                           ),
                           const SizedBox(height: 10.0),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.to(() => const MotDePasseOublie());
+                            },
                             child: const Text(
                               'Mot de passe oublié ?',
                               style: TextStyle(

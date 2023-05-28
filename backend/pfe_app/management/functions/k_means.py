@@ -95,7 +95,7 @@ def plot_data(kmeans, data):
         plt.scatter(cluster_data[:, 0], cluster_data[:, 1], label=f'Cluster {i+1}')
     
     # Plot cluster centers with marker 'x'
-    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], color='red', marker='x', label='Centroids')
+    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], color='red', marker='x', label='Centroids') # type: ignore
     
     plt.title('K-means Clustering')
     plt.xlabel('Longitude')

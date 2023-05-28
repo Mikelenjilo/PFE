@@ -1,7 +1,9 @@
 import 'package:latlong2/latlong.dart';
+import 'package:pfe_ui/src/models/user.dart';
 
 class Cluster {
   int clusterId;
+  List<User> users;
   int numberOfUsers = 0;
   int numberOfSickUsers = 0;
   LatLng centroidPosition = LatLng(0, 0);
@@ -15,11 +17,12 @@ class Cluster {
     required this.centroidPosition,
     required this.radius,
     required this.spreadRate,
+    this.users = const [],
   });
 
   @override
   String toString() {
-    return 'Cluster(clusterId: $clusterId, numberOfUsers: $numberOfUsers, numberOfSickUsers: $numberOfSickUsers, centroidPosition: $centroidPosition, radius: $radius, spreadRate: $spreadRate)';
+    return 'Cluster(clusterId: $clusterId, numberOfUsers: $numberOfUsers, numberOfSickUsers: $numberOfSickUsers, centroidPosition: $centroidPosition, radius: $radius, spreadRate: $spreadRate, users: $users)';
   }
 
   Map<String, dynamic> toJson() {

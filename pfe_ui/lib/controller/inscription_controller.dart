@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
+import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
-import 'package:pfe_ui/core/services/shared_preferences_services.dart';
+import 'package:pfe_ui/main.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
 import 'package:pfe_ui/view/widgets/error_widget.dart';
@@ -14,11 +15,12 @@ class InscriptionController extends GetxController {
   late String gender;
   String? dateOfContamination;
   RxString selectedValue = ''.obs;
+  RxList diseases = [].obs;
   RxBool diabete = false.obs;
-  RxBool cancer = false.obs;
-  RxBool maladiesCardiaques = false.obs;
-  RxBool maladiesRenales = false.obs;
+  RxBool maladieCardiaque = false.obs;
   RxBool maladieRespiratoire = false.obs;
+  RxBool cancer = false.obs;
+  RxBool maladieRenale = false.obs;
 
   setFirstName(String value) {
     firstName = value;
@@ -123,7 +125,7 @@ class InscriptionController extends GetxController {
   }
 
   Future<void> inscription() async {
-    final User? user = await AuthImpl().registerInWithEmailAndPassword(
+    final User user = await AuthImpl().registerInWithEmailAndPassword(
       email: email,
       password: password,
       firstName: firstName,
@@ -133,30 +135,12 @@ class InscriptionController extends GetxController {
       dateOfContamination: dateOfContamination,
     );
 
-    if (user == null) {
-      showError('Une erreur est survenue');
-      return;
-    } else {
-      SharedPreferencesService.setUserId(user.userId);
-      SharedPreferencesService.setFirstName(user.firstName);
-      SharedPreferencesService.setLastName(user.lastName);
-      SharedPreferencesService.setDateOfBirth(
-          user.dateOfBirth.toString().split(' ')[0]);
-      SharedPreferencesService.setEmail(user.email);
-      SharedPreferencesService.setPassword(user.password);
-      SharedPreferencesService.setCronicDisease1(user.cronicDisease1 ?? '');
-      SharedPreferencesService.setCronicDisease2(user.cronicDisease2 ?? '');
-      SharedPreferencesService.setCronicDisease3(user.cronicDisease3 ?? '');
-      SharedPreferencesService.setCronicDisease4(user.cronicDisease4 ?? '');
-      SharedPreferencesService.setCronicDisease5(user.cronicDisease5 ?? '');
-      SharedPreferencesService.setGender(user.gender);
-      SharedPreferencesService.setLatitude(user.latitude ?? 0.0);
-      SharedPreferencesService.setLongitude(user.longitude ?? 0.0);
-      SharedPreferencesService.setIfTransmit(user.ifTransmit ?? false);
-      SharedPreferencesService.setDateOfContamination(
-          user.dateOfContamination.toString().split(' ')[0]);
-      SharedPreferencesService.setOnline(user.online ?? false);
-      SharedPreferencesService.setClusterId(user.clusterId);
-    }
+    await AuthImpl().updateCronicDiseases(
+      user: user,
+      diseases: diseases.toList().cast<String>(),
+    );
+
+    Get.find<UserController>().setUser(user);
+    prefs!.setInt('id', user.userId);
   }
 }

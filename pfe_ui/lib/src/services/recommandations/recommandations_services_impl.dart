@@ -1,20 +1,24 @@
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/recommandation_controller.dart';
+import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/shared_preferences_services.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
+import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/recommandations/recommandations_services.dart';
 
 final RecommandationController recommandationController =
     Get.find<RecommandationController>();
 
+final User? user = Get.find<UserController>().user;
+
 class RecommandationServicesImpl implements IRecommandationsServices {
   @override
   void getRecommandations(List<Cluster> clusters) {
-    final double avgFactorDisease = _avgCronicFactors();
-    final DateTime dateOfBirthInDateTime =
-        DateTime.parse(SharedPreferencesService.getDateOfBirth());
+    recommandationController.recommandations.clear();
+    final DateTime dateOfBirthInDateTime = DateTime.parse(user!.dateOfBirth);
     int age = DateTime.now().year - dateOfBirthInDateTime.year;
-    double factorAge = _factorAge(age);
+    final double factorAge = _factorAge(age);
+    final double avgFactorDisease = _avgCronicFactors();
 
     for (final cluster in clusters) {
       final double spreadRate = cluster.spreadRate;
@@ -25,37 +29,115 @@ class RecommandationServicesImpl implements IRecommandationsServices {
         'clusterId': cluster.clusterId,
         'recommendation': recommendation,
       };
-      recommandationController.recommandation.add(recommandationMap);
+      recommandationController.recommandations.add(recommandationMap);
     }
   }
 }
 
 double _avgCronicFactors() {
-  String? cronicDisease1 = SharedPreferencesService.getCronicDisease1();
-  String? cronicDisease2 = SharedPreferencesService.getCronicDisease2();
-  String? cronicDisease3 = SharedPreferencesService.getCronicDisease3();
-  String? cronicDisease4 = SharedPreferencesService.getCronicDisease4();
-  String? cronicDisease5 = SharedPreferencesService.getCronicDisease5();
+  switch (user?.cronicDiseases?.length) {
+    case 0:
+      return 0.05;
+    case 1:
+      String? cronicDisease1 = user?.cronicDiseases?[0];
 
-  double? factorDisease1 = _factorDisease(cronicDisease1);
-  double? factorDisease2 = _factorDisease(cronicDisease2);
-  double? factorDisease3 = _factorDisease(cronicDisease3);
-  double? factorDisease4 = _factorDisease(cronicDisease4);
-  double? factorDisease5 = _factorDisease(cronicDisease5);
+      double factorDisease1 = _factorDisease(cronicDisease1);
 
-  List<double> factorDiseases = [
-    factorDisease1,
-    factorDisease2,
-    factorDisease3,
-    factorDisease4,
-    factorDisease5,
-  ];
+      return factorDisease1;
 
-  double avgFactorDiseases = factorDiseases.isNotEmpty
-      ? factorDiseases.reduce((a, b) => a + b) / factorDiseases.length
-      : 0.0;
+    case 2:
+      String? cronicDisease1 = user?.cronicDiseases?[0];
+      String? cronicDisease2 = user?.cronicDiseases?[1];
 
-  return avgFactorDiseases;
+      double factorDisease1 = _factorDisease(cronicDisease1);
+      double factorDisease2 = _factorDisease(cronicDisease2);
+
+      List<double> factorDiseases = [
+        factorDisease1,
+        factorDisease2,
+      ];
+
+      double avgFactorDiseases = factorDiseases.isNotEmpty
+          ? factorDiseases.reduce((a, b) => a + b) / factorDiseases.length
+          : 0.0;
+
+      return avgFactorDiseases;
+
+    case 3:
+      String? cronicDisease1 = user?.cronicDiseases?[0];
+      String? cronicDisease2 = user?.cronicDiseases?[1];
+      String? cronicDisease3 = user?.cronicDiseases?[2];
+
+      double factorDisease1 = _factorDisease(cronicDisease1);
+      double factorDisease2 = _factorDisease(cronicDisease2);
+      double factorDisease3 = _factorDisease(cronicDisease3);
+
+      List<double> factorDiseases = [
+        factorDisease1,
+        factorDisease2,
+        factorDisease3,
+      ];
+
+      double avgFactorDiseases = factorDiseases.isNotEmpty
+          ? factorDiseases.reduce((a, b) => a + b) / factorDiseases.length
+          : 0.0;
+
+      return avgFactorDiseases;
+
+    case 4:
+      String? cronicDisease1 = user?.cronicDiseases?[0];
+      String? cronicDisease2 = user?.cronicDiseases?[1];
+      String? cronicDisease3 = user?.cronicDiseases?[2];
+      String? cronicDisease4 = user?.cronicDiseases?[3];
+
+      double factorDisease1 = _factorDisease(cronicDisease1);
+      double factorDisease2 = _factorDisease(cronicDisease2);
+      double factorDisease3 = _factorDisease(cronicDisease3);
+      double factorDisease4 = _factorDisease(cronicDisease4);
+
+      List<double> factorDiseases = [
+        factorDisease1,
+        factorDisease2,
+        factorDisease3,
+        factorDisease4,
+      ];
+
+      double avgFactorDiseases = factorDiseases.isNotEmpty
+          ? factorDiseases.reduce((a, b) => a + b) / factorDiseases.length
+          : 0.0;
+
+      return avgFactorDiseases;
+
+    case 5:
+      String? cronicDisease1 = user?.cronicDiseases?[0];
+      String? cronicDisease2 = user?.cronicDiseases?[1];
+      String? cronicDisease3 = user?.cronicDiseases?[2];
+      String? cronicDisease4 = user?.cronicDiseases?[3];
+      String? cronicDisease5 = user?.cronicDiseases?[4];
+
+      double factorDisease1 = _factorDisease(cronicDisease1);
+      double factorDisease2 = _factorDisease(cronicDisease2);
+      double factorDisease3 = _factorDisease(cronicDisease3);
+      double factorDisease4 = _factorDisease(cronicDisease4);
+      double factorDisease5 = _factorDisease(cronicDisease5);
+
+      List<double> factorDiseases = [
+        factorDisease1,
+        factorDisease2,
+        factorDisease3,
+        factorDisease4,
+        factorDisease5,
+      ];
+
+      double avgFactorDiseases = factorDiseases.isNotEmpty
+          ? factorDiseases.reduce((a, b) => a + b) / factorDiseases.length
+          : 0.0;
+
+      return avgFactorDiseases;
+
+    default:
+      return 0.0;
+  }
 }
 
 double _factorDisease(String? disease) {
@@ -72,8 +154,10 @@ double _factorDisease(String? disease) {
       return 0.4;
     case '':
       return 0.05;
+    case null:
+      return 0.05;
     default:
-      throw Exception('Disease not found');
+      throw Exception('Maladie non trouvée');
   }
 }
 
@@ -84,7 +168,9 @@ double _factorAge(int age) {
     return 0.3;
   } else if (age > 30 && age <= 60) {
     return 0.5;
-  } else if (age > 60 && age <= 120) {
+  } else if (age > 60 && age <= 80) {
+    return 0.8;
+  } else if (age > 80 && age <= 120) {
     return 0.9;
   } else {
     throw Exception('Invalid age');

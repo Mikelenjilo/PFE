@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/controller/inscription_controller.dart';
+import 'package:pfe_ui/view/screens/app_page.dart';
 import 'package:pfe_ui/view/widgets/custom_drop_downbuttom_field.dart';
 import 'package:pfe_ui/view/widgets/custom_text_field.dart';
 
@@ -279,7 +280,6 @@ class InscriptionPage3 extends StatelessWidget {
                               groupValue: controller.selectedValue.value,
                               onChanged: (value) {
                                 controller.selectedValue.value = value!;
-                                print(controller.selectedValue.value);
                               },
                             ),
                           ),
@@ -293,7 +293,6 @@ class InscriptionPage3 extends StatelessWidget {
                               groupValue: controller.selectedValue.value,
                               onChanged: (value) {
                                 controller.selectedValue.value = value!;
-                                print(controller.selectedValue.value);
                               },
                             ),
                           ),
@@ -314,43 +313,77 @@ class InscriptionPage3 extends StatelessWidget {
                   () => Column(
                     children: [
                       CheckboxListTile(
-                        title: Text('Diabète'),
+                        title: const Text('Diabète'),
                         value: controller.diabete.value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
                           controller.diabete.value = value!;
+                          if (value &&
+                              !controller.diseases.contains('diabete')) {
+                            controller.diseases.add('diabete');
+                          } else if (value == false) {
+                            controller.diseases.remove('diabete');
+                          }
                         },
                       ),
                       CheckboxListTile(
-                        title: Text('Cancer'),
+                        title: const Text('Cancer'),
                         value: controller.cancer.value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
                           controller.cancer.value = value!;
+                          if (value &&
+                              !controller.diseases.contains('cancer')) {
+                            controller.diseases.add('cancer');
+                          } else if (value == false) {
+                            controller.diseases.remove('cancer');
+                          }
                         },
                       ),
                       CheckboxListTile(
-                        title: Text('Maladies Cardiaques'),
-                        value: controller.maladiesCardiaques.value,
+                        title: const Text('Maladies Cardiaques'),
+                        value: controller.maladieCardiaque.value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
-                          controller.maladiesCardiaques.value = value!;
+                          controller.maladieCardiaque.value = value!;
+                          if (value &&
+                              !controller.diseases
+                                  .contains('maladie cardiques')) {
+                            controller.diseases.add('maladies cardiaques');
+                          } else if (value == false) {
+                            controller.diseases.remove('maladie cardiques');
+                          }
                         },
                       ),
                       CheckboxListTile(
-                        title: Text('Maladies Rénales'),
-                        value: controller.maladiesRenales.value,
+                        title: const Text('Maladies Rénales'),
+                        value: controller.maladieRenale.value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
-                          controller.maladiesRenales.value = value!;
+                          controller.maladieRenale.value = value!;
+                          if (value &&
+                              !controller.diseases
+                                  .contains('maladies renales')) {
+                            controller.diseases.add('maladies renales');
+                          } else if (value == false) {
+                            controller.diseases.remove('maladies renales');
+                          }
                         },
                       ),
                       CheckboxListTile(
-                        title: Text('Maladie Respiratoire'),
+                        title: const Text('Maladie Respiratoire'),
                         value: controller.maladieRespiratoire.value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
                           controller.maladieRespiratoire.value = value!;
+                          if (value &&
+                              !controller.diseases
+                                  .contains('maladies respiratoires')) {
+                            controller.diseases.add('maladies respiratoires');
+                          } else if (value == false) {
+                            controller.diseases
+                                .remove('maladies respiratoires');
+                          }
                         },
                       )
                     ],
@@ -360,10 +393,13 @@ class InscriptionPage3 extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20.0),
-          Container(
+          SizedBox(
             width: 250,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                await controller.setInfoPage3();
+                Get.to(() => const AppPage());
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1273EB),
                 minimumSize: const Size(double.infinity, 50.0),

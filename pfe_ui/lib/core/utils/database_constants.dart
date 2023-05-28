@@ -14,7 +14,12 @@ abstract class DjangoConstants {
   static const String patchUpdateUserPasswordUrl =
       '${baseUrl}update_user_password/';
   static const String patchUpdateUserLatitudeAndLongitudeUrl =
-      '${baseUrl}update_user_latitude_and_longitude/}';
+      '${baseUrl}update_user_latitude_and_longitude/';
+  static const String patchUpdateUserCronicDiseasesUrl =
+      '${baseUrl}update_user_cronic_diseases/';
+  static const String patchAssignUserToClosestClusterUrl =
+      '${baseUrl}assign_user_to_cluster/';
+  static const String patchUpdateUserInfosUrl = '${baseUrl}update_user_infos/';
 
   // DELETE urls
   static const String deleteUserUrl = '${baseUrl}users/';

@@ -14,4 +14,11 @@ abstract class IAuth {
   Future<User> signInWithEmailAndPassword(String email, String password);
 
   Future<bool> signOut(User user);
+
+  void updateCronicDiseases({
+    required User user,
+    required List<String> diseases,
+  });
+
+  Future<void> assignUserToClosestCluster(User user);
 }

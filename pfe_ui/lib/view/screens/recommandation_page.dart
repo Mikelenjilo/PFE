@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pfe_ui/controller/recommandation_controller.dart';
-import 'package:pfe_ui/core/services/shared_preferences_services.dart';
+import 'package:pfe_ui/controller/user_controller.dart';
+import 'package:pfe_ui/core/utils/ui_constants.dart';
+import 'package:pfe_ui/src/models/user.dart';
 
 final RecommandationController recommandationController =
-    RecommandationController();
+    Get.find<RecommandationController>();
 
-final int clusterId = SharedPreferencesService.getClusterId();
-
-class RecommendationsPage extends StatefulWidget {
-  const RecommendationsPage({super.key});
-
-  @override
-  State<RecommendationsPage> createState() => _RecommendationsPageState();
-}
-
-class _RecommendationsPageState extends State<RecommendationsPage> {
+class RecommendationsPage extends StatelessWidget {
   double recommandationRate = 0;
-  double recommandationDetection() {
+
+  RecommendationsPage({super.key});
+
+  double recommandationDetection(int clusterId) {
     final List<Map<String, num>> recommandations =
-        recommandationController.recommandation;
+        recommandationController.recommandations;
 
     for (Map<String, num> recommandation in recommandations) {
       if (recommandation['clusterId'] == clusterId) {
-        return recommandation['recommandation'] as double;
+        return recommandation['recommendation'] as double;
       }
     }
 
@@ -32,22 +29,39 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (recommandationRate == 0) {
-      recommandationRate = recommandationDetection();
-    } else if (recommandationRate >= 0.7) {
-      return const DangerTresEleve();
-    } else if (recommandationRate >= 0.5) {
-      return const DangerEleve();
-    } else if (recommandationRate >= 0.4) {
-      return const DangerMoyen();
-    } else if (recommandationRate >= 0.1) {
-      return const DangerFaible();
-    } else if (recommandationRate > 0) {
-      return const DangerTresFaible();
-    } else {
-      return Container();
-    }
-    return Container();
+    return GetBuilder<RecommandationController>(
+      builder: (controller) {
+        final User user = Get.find<UserController>().user!;
+        final int clusterId = user.clusterId;
+        recommandationRate = recommandationDetection(clusterId);
+
+        if (clusterId == 0) {
+          return const Center(
+            child: Text(
+              'Vous n\'êtes pas encore affecté à un cluster, parceque vous n\'avez pas encore partagé votre position',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        } else if (recommandationRate >= 0.7) {
+          return const DangerTresEleve();
+        } else if (recommandationRate >= 0.5) {
+          return const DangerEleve();
+        } else if (recommandationRate >= 0.4) {
+          return const DangerMoyen();
+        } else if (recommandationRate >= 0.1) {
+          return const DangerFaible();
+        } else if (recommandationRate > 0) {
+          return const DangerTresFaible();
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }
 
@@ -58,31 +72,20 @@ class DangerTresEleve extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 40.0, right: 30),
-          child: Text(
-            'EpidemicZone',
-            style: TextStyle(
-              color: Color(0xFF1273EB),
-              fontWeight: FontWeight.bold,
-              fontSize: 24.0,
-              fontFamily: 'Mada',
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
             left: 20.0,
             right: 20.0,
-            top: 30.0,
+            top: 50.0,
           ),
           child: Column(
             children: [
+              Text(
+                'EpidemicZone',
+                style: kTextStyleTitle,
+              ),
+              const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15.0,
@@ -168,31 +171,20 @@ class DangerEleve extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 40.0, right: 30),
-          child: Text(
-            'EpidemicZone',
-            style: TextStyle(
-              color: Color(0xFF1273EB),
-              fontWeight: FontWeight.bold,
-              fontSize: 24.0,
-              fontFamily: 'Mada',
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
             left: 20.0,
             right: 20.0,
-            top: 30.0,
+            top: 50.0,
           ),
           child: Column(
             children: [
+              Text(
+                'EpidemicZone',
+                style: kTextStyleTitle,
+              ),
+              const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15.0,
@@ -278,31 +270,20 @@ class DangerMoyen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 40.0, right: 30),
-          child: Text(
-            'EpidemicZone',
-            style: TextStyle(
-              color: Color(0xFF1273EB),
-              fontWeight: FontWeight.bold,
-              fontSize: 24.0,
-              fontFamily: 'Mada',
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
             left: 20.0,
             right: 20.0,
-            top: 30.0,
+            top: 50.0,
           ),
           child: Column(
             children: [
+              Text(
+                'EpidemicZone',
+                style: kTextStyleTitle,
+              ),
+              const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15.0,
@@ -313,7 +294,7 @@ class DangerMoyen extends StatelessWidget {
                   color: Colors.orange,
                 ),
                 child: Text(
-                  'Taux de propagation est très élevé dans votre zone géographique',
+                  'Taux de propagation est moyen votre zone géographique',
                   style: GoogleFonts.averiaLibre(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -388,31 +369,20 @@ class DangerFaible extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 40.0, right: 30),
-          child: Text(
-            'EpidemicZone',
-            style: TextStyle(
-              color: Color(0xFF1273EB),
-              fontWeight: FontWeight.bold,
-              fontSize: 24.0,
-              fontFamily: 'Mada',
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
             left: 20.0,
             right: 20.0,
-            top: 30.0,
+            top: 50.0,
           ),
           child: Column(
             children: [
+              Text(
+                'EpidemicZone',
+                style: kTextStyleTitle,
+              ),
+              const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15.0,
@@ -420,7 +390,7 @@ class DangerFaible extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.yellow,
+                  color: Colors.yellow.shade600,
                 ),
                 child: Text(
                   'Taux de propagation est faible dans votre zone géographique',
@@ -498,31 +468,20 @@ class DangerTresFaible extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 40.0, right: 30),
-          child: Text(
-            'EpidemicZone',
-            style: TextStyle(
-              color: Color(0xFF1273EB),
-              fontWeight: FontWeight.bold,
-              fontSize: 24.0,
-              fontFamily: 'Mada',
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
             left: 20.0,
             right: 20.0,
-            top: 30.0,
+            top: 50.0,
           ),
           child: Column(
             children: [
+              Text(
+                'EpidemicZone',
+                style: kTextStyleTitle,
+              ),
+              const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15.0,

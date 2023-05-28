@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pfe_ui/controller/update_info_controller.dart';
+
+final UpdateInfoController updateInfoController =
+    Get.find<UpdateInfoController>();
 
 class UpdateInfo extends StatelessWidget {
   final _nomController = TextEditingController();
@@ -8,6 +12,7 @@ class UpdateInfo extends StatelessWidget {
   final _dateNaissanceController = TextEditingController();
   final _ancienMdpController = TextEditingController();
   final _nouveauMdpController = TextEditingController();
+  final _confirmMdpController = TextEditingController();
 
   UpdateInfo({super.key});
 
@@ -73,7 +78,6 @@ class UpdateInfo extends StatelessWidget {
                             borderSide: BorderSide.none,
                           ),
                         ),
-                        // onChanged: (value) => controller.nom = value,
                       ),
                       const SizedBox(height: 10.0),
                       Text(
@@ -100,7 +104,6 @@ class UpdateInfo extends StatelessWidget {
                             borderSide: BorderSide.none,
                           ),
                         ),
-                        // onChanged: (value) => controller.prenom = value,
                       ),
                       const SizedBox(height: 10.0),
                       Text(
@@ -113,12 +116,17 @@ class UpdateInfo extends StatelessWidget {
                       const SizedBox(height: 5.0),
                       GestureDetector(
                         onTap: () async {
-                          await showDatePicker(
+                          final DateTime? picked = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(100),
                             lastDate: DateTime.now(),
                           );
+
+                          if (picked != null) {
+                            _dateNaissanceController.text =
+                                picked.toString().substring(0, 10);
+                          }
                         },
                         child: AbsorbPointer(
                           child: TextField(
@@ -137,11 +145,9 @@ class UpdateInfo extends StatelessWidget {
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            // onChanged: (value) => controller.dateNaissance = value,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10.0),
                       const SizedBox(height: 10.0),
                       Text(
                         'Ancien mot de passe',
@@ -152,6 +158,7 @@ class UpdateInfo extends StatelessWidget {
                       ),
                       const SizedBox(height: 5.0),
                       TextField(
+                        obscureText: true,
                         controller: _ancienMdpController,
                         style: GoogleFonts.averiaLibre(
                           fontSize: 14.0,
@@ -169,7 +176,6 @@ class UpdateInfo extends StatelessWidget {
                             borderSide: BorderSide.none,
                           ),
                         ),
-// onChanged: (value) => controller.ancienMotDePasse = value,
                       ),
                       const SizedBox(height: 10.0),
                       Text(
@@ -181,6 +187,7 @@ class UpdateInfo extends StatelessWidget {
                       ),
                       const SizedBox(height: 5.0),
                       TextField(
+                        obscureText: true,
                         controller: _nouveauMdpController,
                         style: GoogleFonts.averiaLibre(
                           fontSize: 14.0,
@@ -198,7 +205,35 @@ class UpdateInfo extends StatelessWidget {
                             borderSide: BorderSide.none,
                           ),
                         ),
-// onChanged: (value) => controller.nouveauMotDePasse = value,
+                      ),
+                      const SizedBox(height: 10.0),
+                      Text(
+                        'Confirmer le nouveau mot de passe',
+                        style: GoogleFonts.averiaLibre(
+                          fontSize: 16.0,
+                          color: Colors.grey[800]?.withOpacity(0.5),
+                        ),
+                      ),
+                      const SizedBox(height: 5.0),
+                      TextField(
+                        obscureText: true,
+                        controller: _confirmMdpController,
+                        style: GoogleFonts.averiaLibre(
+                          fontSize: 14.0,
+                          color: Colors.black,
+                        ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          hintText: 'Entrez votre nouveau mot de passe',
+                          contentPadding: const EdgeInsets.all(10.0),
+                          prefixIcon:
+                              const Icon(Icons.lock, color: Colors.black),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -210,22 +245,23 @@ class UpdateInfo extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
-        child: ElevatedButton(
-          onPressed: () {
-// Perform update logic here
-          },
-          child: const Text('Enregistrer les informations'),
+        child: SizedBox(
+          height: 50.0,
+          child: ElevatedButton(
+            onPressed: () async {
+              await updateInfoController.setInfo(
+                nom: _nomController.text,
+                prenom: _prenomController.text,
+                dateNaissance: _dateNaissanceController.text,
+                ancienMotDePasse: _ancienMdpController.text,
+                nouveauMotDePasse: _nouveauMdpController.text,
+                confirmationNouveauMotDePasse: _confirmMdpController.text,
+              );
+            },
+            child: const Text('Enregistrer les informations'),
+          ),
         ),
       ),
     );
   }
-}
-
-class UpdateInfoController extends GetxController {
-  RxString nom = ''.obs;
-  RxString prenom = ''.obs;
-  RxString dateNaissance = ''.obs;
-  RxString numeroTelephone = ''.obs;
-  RxString ancienMotDePasse = ''.obs;
-  RxString nouveauMotDePasse = ''.obs;
 }

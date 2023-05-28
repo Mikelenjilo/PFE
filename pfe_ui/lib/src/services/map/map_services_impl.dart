@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
+import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/map/map_services.dart';
 
 class MapServicesImpl implements IMapServices {
@@ -18,29 +19,5 @@ class MapServicesImpl implements IMapServices {
     }
 
     return clustersCentroid;
-  }
-
-  @override
-  Future<List<Marker>> populateMarkers() async {
-    final List<Marker> markers = [];
-    final Map<String, LatLng> clustersCentroid = await getClusterCentroid();
-
-    for (var cluster in clustersCentroid.entries) {
-      markers.add(
-        Marker(
-          width: 80.0,
-          height: 80.0,
-          point: cluster.value,
-          builder: (ctx) => IconButton(
-            icon: const Icon(Icons.location_on),
-            color: Colors.red,
-            iconSize: 45.0,
-            onPressed: () {},
-          ),
-        ),
-      );
-    }
-
-    return markers;
   }
 }

@@ -4,13 +4,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pfe_ui/controller/recommandation_controller.dart';
+import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
+import 'package:pfe_ui/src/models/user.dart';
+import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
 
 import 'package:pfe_ui/src/services/recommandations/recommandations_services_impl.dart';
 
 final RecommandationController recommandationController =
     Get.find<RecommandationController>();
+final User? user = Get.find<UserController>().user;
 
 class MapAppController extends GetxController {
   LatLng center = LatLng(28.0339, 1.6596);
@@ -20,9 +24,11 @@ class MapAppController extends GetxController {
   double zoom = 5.0;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    populateMarkers();
+    await recommandationController.calculateRecommandations();
+    await populateUserMarker();
+    await populateMarkers();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.defaultDialog(
         title: 'Bienvenue!',
@@ -44,15 +50,52 @@ class MapAppController extends GetxController {
     LocationPermission permission = await Geolocator.requestPermission();
 
     if (permission == LocationPermission.denied) {
-      // TODO: handle the scenario when the user denies location permission
-    } else if (permission == LocationPermission.deniedForever) {
-      // TODO: handle the scenario when the user denies location permission permanently
+      Get.defaultDialog(
+        title: 'Erreur',
+        content: const Text(
+            'Vous devez activer votre GPS pour bénéficier des recommandations et statistiques.'),
+        textConfirm: 'Okay',
+        confirmTextColor: Colors.white,
+        onConfirm: () {
+          Get.back();
+        },
+      );
+      return;
+    } else if (permission == LocationPermission.unableToDetermine) {
+      Get.defaultDialog(
+        title: 'Erreur',
+        content: const Text(
+            'Vous devez activer votre GPS pour bénéficier des recommandations et statistiques.'),
+        textConfirm: 'Okay',
+        confirmTextColor: Colors.white,
+        onConfirm: () {
+          Get.back();
+        },
+      );
+      return;
     } else {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      Position position;
+
+      try {
+        position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+      } on Exception catch (e) {
+        Get.defaultDialog(
+          title: 'Erreur: ${e.toString()}',
+          content: const Text(
+              'Vous devez activer votre GPS pour bénéficier des recommandations et statistiques.'),
+          textConfirm: 'Okay',
+          confirmTextColor: Colors.white,
+          onConfirm: () {
+            Get.back();
+          },
+        );
+        return;
+      }
 
       LatLng userLocation = LatLng(position.latitude, position.longitude);
-      center = userLocation;
+      user?.location = userLocation;
+
       userLocationMarker = Marker(
         width: 40.0,
         height: 40.0,
@@ -60,10 +103,39 @@ class MapAppController extends GetxController {
         builder: (ctx) =>
             const Icon(Icons.location_on, size: 45, color: Colors.red),
       );
+      await DjangoHelper.patchUpdateUserLatitudeAndLongitude(
+        userId: user!.userId,
+        position: userLocation,
+      );
+
+      if (user!.clusterId == 0) {
+        await AuthImpl().assignUserToClosestCluster(user!);
+        await DjangoHelper.patchAssignUserToClosestCluster(
+          userId: user!.userId,
+          clusterId: user!.clusterId,
+        );
+      }
 
       isLoading = false;
       update();
     }
+  }
+
+  Future<void> populateUserMarker() async {
+    if (user?.location == null) {
+      return;
+    } else {
+      print(user!.location!);
+      userLocationMarker = Marker(
+        width: 40.0,
+        height: 40.0,
+        point: user!.location!,
+        builder: (ctx) =>
+            const Icon(Icons.location_on, size: 45, color: Colors.red),
+      );
+    }
+
+    update();
   }
 
   Future<void> populateMarkers() async {
@@ -180,7 +252,7 @@ class MapAppController extends GetxController {
     for (var cluster in clustersData) {
       LatLng centroid = cluster.centroidPosition;
       final List<Map<String, num>> recommandations =
-          recommandationController.recommandation;
+          recommandationController.recommandations;
 
       for (Map<String, num> recommandation in recommandations) {
         if (recommandation['clusterId'] == cluster.clusterId) {
@@ -255,7 +327,7 @@ class MapAppController extends GetxController {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Taux de propagation: ${cluster.spreadRate * 100}%',
+                        'Taux de propagation: ${round(cluster.spreadRate, decimals: 2) * 100}%',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],

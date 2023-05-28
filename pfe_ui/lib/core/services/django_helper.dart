@@ -24,40 +24,139 @@ class DjangoHelper {
   }
 
   static Future<User> getUserById(int id) async {
-    final Uri url = Uri.parse('${DjangoConstants.getUsersUrl}/$id');
+    final Uri url = Uri.parse('${DjangoConstants.getUsersUrl}$id');
     final http.Response response = await http.get(url);
     final userData = jsonDecode(response.body);
     return User.fromJson(userData);
   }
 
-  static Future<bool> patchUpdateUserPassword(
-      {required int userId, required String password}) async {
-    final Map<String, dynamic> data = {'password': password};
+  // Users PATCH
+  static Future<bool> patchUpdateUserPassword({
+    required String email,
+    required String password,
+  }) async {
+    final Map<String, dynamic> data = {
+      'email': email,
+      'password': password,
+    };
     final String encodedData = jsonEncode(data);
-    final Uri uri = Uri.parse('${DjangoConstants.getUsersUrl}/$userId');
-    final http.Response response = await http.patch(uri, body: encodedData);
+    final Uri uri = Uri.parse(DjangoConstants.patchUpdateUserPasswordUrl);
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
+    );
 
     return response.statusCode == 200 ? true : false;
   }
 
-  static Future<bool> patchUpdateUserLatitudeAndLongitude(
-      {required int userId, required LatLng position}) async {
+  static Future<bool> patchUpdateUserLatitudeAndLongitude({
+    required int userId,
+    required LatLng position,
+  }) async {
     final Map<String, dynamic> data = {
+      'user_id': userId,
       'latitude': position.latitude,
       'longitude': position.longitude,
     };
+
     final encodedData = jsonEncode(data);
 
     final Uri uri =
         Uri.parse(DjangoConstants.patchUpdateUserLatitudeAndLongitudeUrl);
 
-    final http.Response response = await http.patch(uri, body: encodedData);
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    return response.statusCode == 200 ? true : false;
+  }
+
+  static Future<bool> patchUpdateUserCronicDiseases({
+    required int userId,
+    required List<String> cronicDiseases,
+  }) async {
+    List<String?> cronicDiseasesWithNullValues = List.generate(
+        5,
+        (index) =>
+            index < cronicDiseases.length ? cronicDiseases[index] : null);
+
+    final Map<String, dynamic> data = {
+      'user_id': userId,
+      'cronic_disease_1': cronicDiseasesWithNullValues[0],
+      'cronic_disease_2': cronicDiseasesWithNullValues[1],
+      'cronic_disease_3': cronicDiseasesWithNullValues[2],
+      'cronic_disease_4': cronicDiseasesWithNullValues[3],
+      'cronic_disease_5': cronicDiseasesWithNullValues[4],
+    };
+
+    final encodedData = jsonEncode(data);
+
+    final Uri uri = Uri.parse(DjangoConstants.patchUpdateUserCronicDiseasesUrl);
+
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    return response.statusCode == 200 ? true : false;
+  }
+
+  static Future<bool> patchAssignUserToClosestCluster({
+    required int userId,
+    required int clusterId,
+  }) async {
+    final Map<String, dynamic> data = {
+      'user_id': userId,
+      'cluster_id': clusterId,
+    };
+
+    final encodedData = jsonEncode(data);
+
+    final Uri uri =
+        Uri.parse(DjangoConstants.patchAssignUserToClosestClusterUrl);
+
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    return response.statusCode == 200 ? true : false;
+  }
+
+  static Future<bool> patchUpdateUserInfos({
+    required int userId,
+    required String lastName,
+    required String firstName,
+    required String dateOfBirth,
+    required String password,
+  }) async {
+    final Map<String, dynamic> data = {
+      'user_id': userId,
+      'last_name': lastName,
+      'first_name': firstName,
+      'date_of_birth': dateOfBirth,
+      'password': password,
+    };
+
+    final encodedData = jsonEncode(data);
+
+    final Uri uri = Uri.parse(DjangoConstants.patchUpdateUserInfosUrl);
+
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
+    );
 
     return response.statusCode == 200 ? true : false;
   }
 
   // Users DELETE
-
   static Future<bool> deleteUserById(int userId) async {
     final Uri uri = Uri.parse('${DjangoConstants.deleteUserUrl}/$userId');
 

@@ -21,12 +21,29 @@ class UserOnlineStatusSerializer(serializers.ModelSerializer):
         model = User
         fields = ['online']
     
-class UserPasswordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['password']
 
 class UserLatitudeAndLongitudeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['latitude', 'longitude']
+        fields = ['user_id', 'latitude', 'longitude']
+
+class UserCronicDiseasesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['user_id', 'cronic_disease_1', 'cronic_disease_2', 'cronic_disease_3', 'cronic_disease_4', 'cronic_disease_5']
+
+class UserToClosestCluster(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['user_id', 'cluster_id']
+
+
+class UserPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+
+class UserUpdateInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['user_id', 'first_name', 'last_name', 'date_of_birth', 'password']

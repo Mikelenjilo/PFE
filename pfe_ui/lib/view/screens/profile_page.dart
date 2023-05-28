@@ -1,81 +1,128 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:pfe_ui/core/services/shared_preferences_services.dart';
-import 'package:pfe_ui/view/screens/connexion_page.dart';
-import 'package:pfe_ui/view/screens/update_info_page.dart';
-import 'package:pfe_ui/view/widgets/profile_info_item.dart';
+import 'package:pfe_ui/controller/user_controller.dart';
+import 'package:pfe_ui/main.dart';
+import 'package:pfe_ui/src/models/user.dart';
+import 'package:pfe_ui/view/screens/modifier_page.dart';
+import 'package:pfe_ui/view/screens/welcome_page.dart';
+import 'package:pfe_ui/view/widgets/profile_page_info.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+final User user = Get.find<UserController>().user!;
+final userController = Get.put(UserController());
+
+class ProfilePage2 extends StatelessWidget {
+  const ProfilePage2({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 70.0),
-              const Center(
-                child: Text(
-                  'EpidemicZone',
-                  style: TextStyle(
-                    color: Color(0xFF1273EB),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 40.0,
-                    fontFamily: 'Mada',
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          prefs!.clear();
+          Get.offAll(const HomePage());
+        },
+        backgroundColor: Colors.red,
+        child: const Icon(
+          Icons.logout,
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.28,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20.0),
+                  bottomRight: Radius.circular(20.0),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(
+                        FontAwesomeIcons.arrowLeft,
+                        color: Colors.white,
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Get.to(() => UpdateInfo());
+                        },
+                      ),
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 20.0),
+                  GetBuilder<UserController>(builder: (context) {
+                    return Text(
+                      '${user.lastName} ${user.firstName}',
+                      style: const TextStyle(
+                        fontSize: 38,
+                        color: Colors.white,
+                      ),
+                    );
+                  }),
+                  GetBuilder<UserController>(builder: (context) {
+                    return Text(
+                      '#${user.userId}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white.withOpacity(0.6),
+                      ),
+                    );
+                  }),
+                ],
               ),
-              const SizedBox(height: 90.0),
-              ProfileInfoItem(
-                label: 'Nom :',
-                value: SharedPreferencesService.getLastName(),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20.0,
+                left: 20.0,
+                right: 20.0,
               ),
-              ProfileInfoItem(
-                label: 'Prénom :',
-                value: SharedPreferencesService.getFirstName(),
-              ),
-              ProfileInfoItem(
-                label: 'Date de naissance :',
-                value: SharedPreferencesService.getDateOfBirth(),
-              ),
-              ProfileInfoItem(
-                label: 'Genre: ',
-                value: SharedPreferencesService.getGender(),
-              ),
-              ProfileInfoItem(
-                label: 'Email :',
-                value: SharedPreferencesService.getEmail(),
-              ),
-              const SizedBox(height: 16.0),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => UpdateInfo());
-                  },
-                  child: const Text('Modifier les informations'),
-                ),
-              ),
-              const SizedBox(height: 42.0),
-              TextButton(
-                onPressed: () {
-                  SharedPreferencesService.clear();
-                  Get.off(() => const Connexion());
+              child: GetBuilder<UserController>(
+                builder: (context) {
+                  return Column(
+                    children: [
+                      ProfilePageInfo(
+                        text: user.lastName,
+                        icon: Icons.person,
+                      ),
+                      ProfilePageInfo(
+                        text: user.firstName,
+                        icon: Icons.person,
+                      ),
+                      ProfilePageInfo(
+                        text: user.dateOfBirth,
+                        icon: Icons.date_range,
+                      ),
+                      ProfilePageInfo(
+                        text: user.gender,
+                        icon: FontAwesomeIcons.venusMars,
+                      ),
+                      ProfilePageInfo(
+                        text: user.email,
+                        icon: Icons.email,
+                      ),
+                    ],
+                  );
                 },
-                child: const Text(
-                  'Déconnexion',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                    fontSize: 18.0,
-                  ),
-                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

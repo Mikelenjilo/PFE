@@ -4,9 +4,11 @@ from rest_framework import viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework import status
+from haversine import haversine, Unit
+
 
 from .models import User, Cluster
-from .serializers import CreateUserSerializer, UserSerializer, ClusterSerializer, UserOnlineStatusSerializer, UserPasswordSerializer, UserLatitudeAndLongitudeSerializer
+from .serializers import CreateUserSerializer, UserCronicDiseasesSerializer, UserSerializer, ClusterSerializer, UserOnlineStatusSerializer, UserPasswordSerializer, UserLatitudeAndLongitudeSerializer, UserToClosestCluster, UserUpdateInfoSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -44,7 +46,6 @@ def login_user(request):
     user = User.objects.get(email=email)
     serializer = UserOnlineStatusSerializer(user, data=request.data, partial=True)
     if serializer.is_valid():
-        user.online = True
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -54,27 +55,83 @@ def logout_user(request):
     user = User.objects.get(email=email)
     serializer = UserOnlineStatusSerializer(user, data=request.data, partial=True)
     if serializer.is_valid():
-        user.online = False
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-@api_view(['PATCH'])
-def update_user_password(request):
-    email = request.data.get('email')
-    user = User.objects.get(email=email)
-    serializer = UserPasswordSerializer(user, data=request.data, partial=True)
-    if serializer.is_valid():
-        user.password = request.data.get('password')
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
 @api_view(['PATCH'])
 def update_user_latitude_and_longitude(request):
     user_id = request.data.get('user_id')
     user = User.objects.get(user_id=user_id)
+
+        
     serializer = UserLatitudeAndLongitudeSerializer(user, data=request.data, partial=True)
+    
     if serializer.is_valid():
         user.latitude = request.data.get('latitude')
         user.longitude = request.data.get('longitude')
+    
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+@api_view(['PATCH'])
+def update_user_cronic_diseases(request):
+    user_id = request.data.get('user_id')
+    user = User.objects.get(user_id=user_id)
+    serializer = UserCronicDiseasesSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        user.cronic_disease_1 = request.data.get('cronic_disease_1')
+        user.cronic_disease_2 = request.data.get('cronic_disease_2')
+        user.cronic_disease_3 = request.data.get('cronic_disease_3')
+        user.cronic_disease_4 = request.data.get('cronic_disease_4')
+        user.cronic_disease_5 = request.data.get('cronic_disease_5')
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+
+@api_view(['PATCH'])
+def assign_user_to_cluster(request):
+    user_id = request.data.get('user_id')
+    cluster_id = request.data.get('cluster_id')
+    user = User.objects.get(user_id=user_id)
+    cluster = Cluster.objects.get(cluster_id=cluster_id)
+    serializer = UserToClosestCluster(user, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        user.cluster_id = cluster
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+@api_view(['PATCH'])
+def update_user_password(request):
+    user_email = request.data.get('email')
+    user_password = request.data.get('password')
+    user = User.objects.get(email=user_email)
+    serializer = UserPasswordSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        user.password = user_password
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['PATCH'])
+def update_user_infos(request):
+    user_id = request.data.get('user_id')
+    user_first_name = request.data.get('first_name')
+    user_last_name = request.data.get('last_name')
+    user_date_of_birth = request.data.get('date_of_birth')
+    user_password = request.data.get('password')
+
+    user = User.objects.get(user_id=user_id)
+
+    serializer = UserUpdateInfoSerializer(user, data=request.data, partial=True)    
+    if serializer.is_valid():
+        user.first_name = user_first_name
+        user.last_name = user_last_name
+        user.date_of_birth = user_date_of_birth
+        user.password = user_password
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
