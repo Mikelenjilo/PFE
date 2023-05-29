@@ -1,13 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:latlong2/latlong.dart';
-
 import 'package:pfe_ui/core/services/django_helper.dart';
-import 'package:pfe_ui/core/services/shared_preferences_services.dart';
 import 'package:pfe_ui/core/utils/database_constants.dart';
-import 'package:pfe_ui/src/models/cluster.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services.dart';
+import 'package:pfe_ui/view/widgets/error_widget.dart';
 
 class AuthImpl implements IAuth {
   @override
@@ -45,6 +42,7 @@ class AuthImpl implements IAuth {
         user.online = true;
         return user;
       } else {
+        showError(errorText: 'Erreur : ${response.statusCode}');
         throw Exception('Error : ${response.statusCode}');
       }
     } on Exception catch (failure) {
@@ -87,33 +85,31 @@ class AuthImpl implements IAuth {
   @override
   Future<void> updateCronicDiseases({
     required User user,
-    required List<String> diseases,
+    required List<String?> diseases,
   }) async {
     user.cronicDiseases = diseases;
-    await DjangoHelper.patchUpdateUserCronicDiseases(
-      userId: user.userId,
-      cronicDiseases: diseases,
+
+    final Map<String, dynamic> data = {
+      'user_id': user.userId,
+      'cronic_disease_1': diseases[0],
+      'cronic_disease_2': diseases[1],
+      'cronic_disease_3': diseases[2],
+      'cronic_disease_4': diseases[3],
+      'cronic_disease_5': diseases[4],
+    };
+
+    final encodedData = jsonEncode(data);
+
+    final Uri uri = Uri.parse(DjangoConstants.patchUpdateUserCronicDiseasesUrl);
+
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
     );
-  }
-
-  @override
-  Future<void> assignUserToClosestCluster(User user) async {
-    LatLng userLocation =
-        LatLng(user.location!.latitude, user.location!.longitude);
-    List<Cluster> clusters = await DjangoHelper.getClusters();
-
-    double distance1 = 1000000000.0;
-    for (var cluster in clusters) {
-      LatLng clusterCentroidLocation = LatLng(cluster.centroidPosition.latitude,
-          cluster.centroidPosition.longitude);
-
-      double distance2 = const Distance()
-          .as(LengthUnit.Meter, userLocation, clusterCentroidLocation);
-
-      if (distance2 < distance1) {
-        distance1 = distance2;
-        user.clusterId = cluster.clusterId;
-      }
+    if (response.statusCode != 200) {
+      showError(errorText: 'Erreur : ${response.statusCode}');
+      throw Exception('Error : ${response.statusCode}');
     }
   }
 }

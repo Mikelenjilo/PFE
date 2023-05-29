@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from haversine import haversine, Unit
 
+from pfe_app.management.functions.prefiltrage_method import prefiltrageMethod, prefiltrageMethodOneUser
+
 
 from .models import User, Cluster
 from .serializers import CreateUserSerializer, UserCronicDiseasesSerializer, UserSerializer, ClusterSerializer, UserOnlineStatusSerializer, UserPasswordSerializer, UserLatitudeAndLongitudeSerializer, UserToClosestCluster, UserUpdateInfoSerializer
@@ -34,29 +36,15 @@ def get_user_by_email(request):
 @api_view(['POST'])
 def create_user(request):
     serializer = CreateUserSerializer(data=request.data)
+    user_email = request.data.get('email')
     if serializer.is_valid():
         serializer.save()
+        user = User.objects.get(email=user_email)
+        prefiltrageMethodOneUser(user.user_id)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-@api_view(['PATCH'])
-def login_user(request):
-    email = request.data.get('email')
-    user = User.objects.get(email=email)
-    serializer = UserOnlineStatusSerializer(user, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-@api_view(['PATCH'])
-def logout_user(request):
-    email = request.data.get('email')
-    user = User.objects.get(email=email)
-    serializer = UserOnlineStatusSerializer(user, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
     
 @api_view(['PATCH'])
@@ -134,4 +122,5 @@ def update_user_infos(request):
         user.date_of_birth = user_date_of_birth
         user.password = user_password
         serializer.save()
+        prefiltrageMethodOneUser(user_id)
         return Response(serializer.data, status=status.HTTP_200_OK)

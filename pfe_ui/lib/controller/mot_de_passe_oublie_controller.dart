@@ -15,15 +15,16 @@ class MotDePasseOublieController extends GetxController {
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$';
     RegExp regex = RegExp(emailRegex);
     if (email.isEmpty || password.isEmpty || passwordConfirm.isEmpty) {
-      showError('Veuillez remplir tous les champs');
+      showError(errorText: 'Veuillez remplir tous les champs');
     } else if (!regex.hasMatch(email)) {
-      showError('Veuillez entrer un email valide');
+      showError(errorText: 'Veuillez entrer un email valide');
     } else if (!(await DjangoHelper.isEmailExist(email))) {
-      showError('Le compte avec cet email n\'existe pas');
+      showError(errorText: 'Le compte avec cet email n\'existe pas');
     } else if (password.length < 6) {
-      showError('Le mot de passe doit contenir au moins 6 caractères');
+      showError(
+          errorText: 'Le mot de passe doit contenir au moins 6 caractères');
     } else if (password != passwordConfirm) {
-      showError('Les mots de passe ne correspondent pas');
+      showError(errorText: 'Les mots de passe ne correspondent pas');
     } else {
       if (await resetPassword(email, password)) {
         Get.back();
@@ -34,7 +35,7 @@ class MotDePasseOublieController extends GetxController {
           colorText: Colors.white,
         );
       } else {
-        showError('Une erreur est survenue');
+        showError(errorText: 'Une erreur est survenue');
       }
     }
   }

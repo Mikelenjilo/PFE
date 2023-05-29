@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pfe_ui/view/screens/connexion_page.dart';
 import 'package:pfe_ui/view/screens/inscription_page.dart';
@@ -10,7 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageView(
-      children: [
+      children: const [
         HomePage1(),
         HomePage2(),
         HomePage3(),
@@ -54,7 +55,7 @@ class _HomePage1State extends State<HomePage1> {
           Positioned(
             top: 376,
             left: 15,
-            child: Container(
+            child: SizedBox(
               width: 351,
               height: 76,
               child: Center(
@@ -75,7 +76,7 @@ class _HomePage1State extends State<HomePage1> {
           Positioned(
             top: 460,
             left: 55,
-            child: Container(
+            child: SizedBox(
               width: 272,
               height: 112,
               child: Center(
@@ -98,14 +99,14 @@ class _HomePage1State extends State<HomePage1> {
               ),
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 633,
             left: 150,
             child: Center(
-              child: Container(
+              child: SizedBox(
                 width: 81,
                 height: 41,
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_forward_ios,
                   color: Colors.white,
                 ),
@@ -300,11 +301,7 @@ class _HomePage3State extends State<HomePage3> {
             child: ElevatedButton(
               onPressed: () {
                 // action
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const InscriptionPage1()),
-                );
+                Get.to(() => const InscriptionPage1());
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xffd9d9d9),
@@ -331,11 +328,7 @@ class _HomePage3State extends State<HomePage3> {
             right: 45,
             child: ElevatedButton(
               onPressed: () {
-                // action
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Connexion()),
-                );
+                Get.to(() => const Connexion());
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xffd9d9d9),

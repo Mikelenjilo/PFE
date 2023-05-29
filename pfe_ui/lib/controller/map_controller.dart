@@ -8,9 +8,10 @@ import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
 import 'package:pfe_ui/src/models/user.dart';
-import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
+import 'package:pfe_ui/src/services/map/map_services_impl.dart';
 
 import 'package:pfe_ui/src/services/recommandations/recommandations_services_impl.dart';
+import 'package:pfe_ui/view/widgets/error_widget.dart';
 
 final RecommandationController recommandationController =
     Get.find<RecommandationController>();
@@ -26,9 +27,9 @@ class MapAppController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    await recommandationController.calculateRecommandations();
-    await populateUserMarker();
     await populateMarkers();
+    await populateUserMarker();
+    // await recommandationController.calculateRecommandations();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.defaultDialog(
         title: 'Bienvenue!',
@@ -50,28 +51,10 @@ class MapAppController extends GetxController {
     LocationPermission permission = await Geolocator.requestPermission();
 
     if (permission == LocationPermission.denied) {
-      Get.defaultDialog(
-        title: 'Erreur',
-        content: const Text(
-            'Vous devez activer votre GPS pour bénéficier des recommandations et statistiques.'),
-        textConfirm: 'Okay',
-        confirmTextColor: Colors.white,
-        onConfirm: () {
-          Get.back();
-        },
-      );
+      showError(errorText: 'Vous devez activer votre GPS pour continuer.');
       return;
     } else if (permission == LocationPermission.unableToDetermine) {
-      Get.defaultDialog(
-        title: 'Erreur',
-        content: const Text(
-            'Vous devez activer votre GPS pour bénéficier des recommandations et statistiques.'),
-        textConfirm: 'Okay',
-        confirmTextColor: Colors.white,
-        onConfirm: () {
-          Get.back();
-        },
-      );
+      showError(errorText: 'Erreur: impossible de déterminer votre position.');
       return;
     } else {
       Position position;
@@ -80,16 +63,7 @@ class MapAppController extends GetxController {
         position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
       } on Exception catch (e) {
-        Get.defaultDialog(
-          title: 'Erreur: ${e.toString()}',
-          content: const Text(
-              'Vous devez activer votre GPS pour bénéficier des recommandations et statistiques.'),
-          textConfirm: 'Okay',
-          confirmTextColor: Colors.white,
-          onConfirm: () {
-            Get.back();
-          },
-        );
+        showError(errorText: 'Erreur: $e');
         return;
       }
 
@@ -100,20 +74,20 @@ class MapAppController extends GetxController {
         width: 40.0,
         height: 40.0,
         point: userLocation,
-        builder: (ctx) =>
-            const Icon(Icons.location_on, size: 45, color: Colors.red),
+        builder: (ctx) => const Icon(
+          Icons.location_on,
+          size: 45,
+          color: Colors.red,
+        ),
       );
-      await DjangoHelper.patchUpdateUserLatitudeAndLongitude(
+
+      await RecommandationServicesImpl().updateUserLatitudeLongitude(
         userId: user!.userId,
         position: userLocation,
       );
 
       if (user!.clusterId == 0) {
-        await AuthImpl().assignUserToClosestCluster(user!);
-        await DjangoHelper.patchAssignUserToClosestCluster(
-          userId: user!.userId,
-          clusterId: user!.clusterId,
-        );
+        await MapServicesImpl().assignUserToClosestCluster(user!);
       }
 
       isLoading = false;
@@ -125,7 +99,6 @@ class MapAppController extends GetxController {
     if (user?.location == null) {
       return;
     } else {
-      print(user!.location!);
       userLocationMarker = Marker(
         width: 40.0,
         height: 40.0,
@@ -245,7 +218,7 @@ class MapAppController extends GetxController {
     isLoading = true;
     update();
 
-    final clustersData = await DjangoHelper.getClusters();
+    final List<Cluster> clustersData = await DjangoHelper.getClusters();
 
     markers.clear();
 

@@ -8,8 +8,8 @@ import 'package:pfe_ui/view/screens/modifier_page.dart';
 import 'package:pfe_ui/view/screens/welcome_page.dart';
 import 'package:pfe_ui/view/widgets/profile_page_info.dart';
 
-final User user = Get.find<UserController>().user!;
-final userController = Get.put(UserController());
+final User? user = Get.find<UserController>().user;
+final userController = Get.find<UserController>();
 
 class ProfilePage2 extends StatelessWidget {
   const ProfilePage2({super.key});
@@ -20,6 +20,7 @@ class ProfilePage2 extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           prefs!.clear();
+          userController.clear();
           Get.offAll(const HomePage());
         },
         backgroundColor: Colors.red,
@@ -68,7 +69,7 @@ class ProfilePage2 extends StatelessWidget {
                   const SizedBox(height: 20.0),
                   GetBuilder<UserController>(builder: (context) {
                     return Text(
-                      '${user.lastName} ${user.firstName}',
+                      '${user?.lastName} ${user?.firstName}',
                       style: const TextStyle(
                         fontSize: 38,
                         color: Colors.white,
@@ -77,7 +78,7 @@ class ProfilePage2 extends StatelessWidget {
                   }),
                   GetBuilder<UserController>(builder: (context) {
                     return Text(
-                      '#${user.userId}',
+                      '#${user?.userId}',
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white.withOpacity(0.6),
@@ -98,23 +99,23 @@ class ProfilePage2 extends StatelessWidget {
                   return Column(
                     children: [
                       ProfilePageInfo(
-                        text: user.lastName,
+                        text: user!.lastName,
                         icon: Icons.person,
                       ),
                       ProfilePageInfo(
-                        text: user.firstName,
+                        text: user!.firstName,
                         icon: Icons.person,
                       ),
                       ProfilePageInfo(
-                        text: user.dateOfBirth,
+                        text: user!.dateOfBirth,
                         icon: Icons.date_range,
                       ),
                       ProfilePageInfo(
-                        text: user.gender,
+                        text: user!.gender,
                         icon: FontAwesomeIcons.venusMars,
                       ),
                       ProfilePageInfo(
-                        text: user.email,
+                        text: user!.email,
                         icon: Icons.email,
                       ),
                     ],

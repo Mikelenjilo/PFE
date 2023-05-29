@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:get/get.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:pfe_ui/controller/recommandation_controller.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
-import 'package:pfe_ui/core/services/shared_preferences_services.dart';
+import 'package:pfe_ui/core/utils/database_constants.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/recommandations/recommandations_services.dart';
+import 'package:pfe_ui/view/widgets/error_widget.dart';
 
 final RecommandationController recommandationController =
     Get.find<RecommandationController>();
@@ -15,9 +20,11 @@ class RecommandationServicesImpl implements IRecommandationsServices {
   @override
   void getRecommandations(List<Cluster> clusters) {
     recommandationController.recommandations.clear();
+
     final DateTime dateOfBirthInDateTime = DateTime.parse(user!.dateOfBirth);
-    int age = DateTime.now().year - dateOfBirthInDateTime.year;
+    final int age = DateTime.now().year - dateOfBirthInDateTime.year;
     final double factorAge = _factorAge(age);
+
     final double avgFactorDisease = _avgCronicFactors();
 
     for (final cluster in clusters) {
@@ -30,6 +37,35 @@ class RecommandationServicesImpl implements IRecommandationsServices {
         'recommendation': recommendation,
       };
       recommandationController.recommandations.add(recommandationMap);
+    }
+  }
+
+  @override
+  Future<void> updateUserLatitudeLongitude({
+    required int userId,
+    required LatLng position,
+  }) async {
+    final Map<String, dynamic> data = {
+      'user_id': userId,
+      'latitude': position.latitude,
+      'longitude': position.longitude,
+    };
+
+    final encodedData = jsonEncode(data);
+
+    final Uri uri =
+        Uri.parse(DjangoConstants.patchUpdateUserLatitudeAndLongitudeUrl);
+
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      showError(errorText: 'Error updating user position');
     }
   }
 }

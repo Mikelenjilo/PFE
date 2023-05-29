@@ -9,6 +9,7 @@ import 'package:pfe_ui/src/models/user.dart';
 final RecommandationController recommandationController =
     Get.find<RecommandationController>();
 
+// ignore: must_be_immutable
 class RecommendationsPage extends StatelessWidget {
   double recommandationRate = 0;
 
@@ -58,7 +59,17 @@ class RecommendationsPage extends StatelessWidget {
         } else if (recommandationRate > 0) {
           return const DangerTresFaible();
         } else {
-          return Container();
+          return const Center(
+            child: Text(
+              'Recommandation non disponible, veuillez activez votre position et réessayer',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
         }
       },
     );

@@ -22,40 +22,6 @@ class InscriptionController extends GetxController {
   RxBool cancer = false.obs;
   RxBool maladieRenale = false.obs;
 
-  setFirstName(String value) {
-    firstName = value;
-  }
-
-  void setLastName(String value) {
-    lastName = value;
-  }
-
-  void setDateOfBirth(String value) {
-    dateOfBirth = value;
-  }
-
-  Future<bool> setEmail(String email) async {
-    if (await DjangoHelper.isEmailExist(email)) {
-      showError('Cet email existe déjà');
-      return false;
-    } else {
-      this.email = email;
-      return true;
-    }
-  }
-
-  void setPassword(String password, String passwordConfirmation) {
-    this.password = password;
-  }
-
-  void setGender(String gender) {
-    this.gender = gender;
-  }
-
-  void setDateOfContamination(String dateOfContamination) {
-    this.dateOfContamination = dateOfContamination;
-  }
-
   Future<bool> setInfoPage1({
     required String email,
     required String password,
@@ -64,18 +30,19 @@ class InscriptionController extends GetxController {
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$';
     RegExp regex = RegExp(emailRegex);
     if (email.isEmpty || password.isEmpty || passwordConfrimation.isEmpty) {
-      showError('Veuillez remplir tous les champs');
+      showError(errorText: 'Veuillez remplir tous les champs');
     } else if (!regex.hasMatch(email)) {
-      showError('Veuillez entrer un email valide');
+      showError(errorText: 'Veuillez entrer un email valide');
     } else if (await DjangoHelper.isEmailExist(email)) {
-      showError('Cet email existe déjà');
+      showError(errorText: 'Cet email existe déjà');
     } else if (password.length < 6) {
-      showError('Le mot de passe doit contenir au moins 6 caractères');
+      showError(
+          errorText: 'Le mot de passe doit contenir au moins 6 caractères');
     } else if (password != passwordConfrimation) {
-      showError('Les mots de passe ne correspondent pas');
+      showError(errorText: 'Les mots de passe ne correspondent pas');
     } else {
-      await setEmail(email);
-      setPassword(password, passwordConfrimation);
+      this.email = email;
+      this.password = password;
       return true;
     }
     return false;
@@ -90,37 +57,43 @@ class InscriptionController extends GetxController {
     String dateRegex = r'^\d{4}-\d{2}-\d{2}$';
     RegExp regex = RegExp(dateRegex);
     if (firstName.isEmpty || lastName.isEmpty || dateOfBirth.isEmpty) {
-      showError('Veuillez remplir tous les champs');
+      showError(errorText: 'Veuillez remplir tous les champs');
     } else if (DateTime.now().year - DateTime.parse(dateOfBirth).year >= 120) {
       showError(
-          'Veuillez entre une date de naissance valide, vous devez avoir moins de 120 ans');
+          errorText:
+              'Veuillez entre une date de naissance valide, vous devez avoir moins de 120 ans');
     } else if (DateTime.now().year - DateTime.parse(dateOfBirth).year <= 2) {
       showError(
-          'Veuillez entre une date de naissance valide, vous devez avoir plus de 2 ans');
+          errorText:
+              'Veuillez entre une date de naissance valide, vous devez avoir plus de 2 ans');
     } else if (!regex.hasMatch(dateOfBirth)) {
-      showError('Veuillez entrer une date de naissance valide (yyyy-mm-dd)');
+      showError(
+          errorText:
+              'Veuillez entrer une date de naissance valide (yyyy-mm-dd)');
     } else if (gender.isEmpty) {
-      showError('Veuillez entrer votre genre');
+      showError(errorText: 'Veuillez entrer votre genre');
     } else {
-      setFirstName(firstName);
-      setLastName(lastName);
-      setDateOfBirth(dateOfBirth);
-      setGender(gender);
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.dateOfBirth = dateOfBirth;
+      this.gender = gender;
       return true;
     }
     return false;
   }
 
-  Future<void> setInfoPage3({
-    String? dateOfContamination,
-  }) async {
+  Future<bool> setInfoPage3() async {
     if (selectedValue.value == 'Oui') {
-      setDateOfContamination(DateTime.now().toString().split(' ')[0]);
+      dateOfContamination = DateTime.now().toString().split(' ')[0];
       await inscription();
+      return true;
     } else if (selectedValue.value == 'Non') {
+      dateOfContamination = null;
       await inscription();
+      return true;
     } else {
-      showError('Veuillez choisir une réponse');
+      showError(errorText: 'Veuillez choisir une réponse');
+      return false;
     }
   }
 
@@ -135,11 +108,29 @@ class InscriptionController extends GetxController {
       dateOfContamination: dateOfContamination,
     );
 
+    if (diseases.length != 5) {
+      List<String?> cronicDiseasesWithNullValues = List.generate(
+        5,
+        (index) => index < diseases.length ? diseases[index] : null,
+      );
+      await AuthImpl().updateCronicDiseases(
+        user: user,
+        diseases: cronicDiseasesWithNullValues,
+      );
+
+      Get.find<UserController>().clear();
+      Get.find<UserController>().setUser(user);
+      prefs!.setInt('id', user.userId);
+
+      return;
+    }
+
     await AuthImpl().updateCronicDiseases(
       user: user,
       diseases: diseases.toList().cast<String>(),
     );
 
+    Get.find<UserController>().clear();
     Get.find<UserController>().setUser(user);
     prefs!.setInt('id', user.userId);
   }

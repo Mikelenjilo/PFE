@@ -23,11 +23,16 @@ class DjangoHelper {
     return User.fromJson(userData);
   }
 
-  static Future<User> getUserById(int id) async {
+  static Future<User?> getUserById(int id) async {
     final Uri url = Uri.parse('${DjangoConstants.getUsersUrl}$id');
     final http.Response response = await http.get(url);
     final userData = jsonDecode(response.body);
-    return User.fromJson(userData);
+
+    if (response.statusCode == 200) {
+      return User.fromJson(userData);
+    } else {
+      return null;
+    }
   }
 
   // Users PATCH
@@ -41,61 +46,6 @@ class DjangoHelper {
     };
     final String encodedData = jsonEncode(data);
     final Uri uri = Uri.parse(DjangoConstants.patchUpdateUserPasswordUrl);
-    final http.Response response = await http.patch(
-      uri,
-      body: encodedData,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    return response.statusCode == 200 ? true : false;
-  }
-
-  static Future<bool> patchUpdateUserLatitudeAndLongitude({
-    required int userId,
-    required LatLng position,
-  }) async {
-    final Map<String, dynamic> data = {
-      'user_id': userId,
-      'latitude': position.latitude,
-      'longitude': position.longitude,
-    };
-
-    final encodedData = jsonEncode(data);
-
-    final Uri uri =
-        Uri.parse(DjangoConstants.patchUpdateUserLatitudeAndLongitudeUrl);
-
-    final http.Response response = await http.patch(
-      uri,
-      body: encodedData,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    return response.statusCode == 200 ? true : false;
-  }
-
-  static Future<bool> patchUpdateUserCronicDiseases({
-    required int userId,
-    required List<String> cronicDiseases,
-  }) async {
-    List<String?> cronicDiseasesWithNullValues = List.generate(
-        5,
-        (index) =>
-            index < cronicDiseases.length ? cronicDiseases[index] : null);
-
-    final Map<String, dynamic> data = {
-      'user_id': userId,
-      'cronic_disease_1': cronicDiseasesWithNullValues[0],
-      'cronic_disease_2': cronicDiseasesWithNullValues[1],
-      'cronic_disease_3': cronicDiseasesWithNullValues[2],
-      'cronic_disease_4': cronicDiseasesWithNullValues[3],
-      'cronic_disease_5': cronicDiseasesWithNullValues[4],
-    };
-
-    final encodedData = jsonEncode(data);
-
-    final Uri uri = Uri.parse(DjangoConstants.patchUpdateUserCronicDiseasesUrl);
-
     final http.Response response = await http.patch(
       uri,
       body: encodedData,

@@ -9,10 +9,8 @@ class UserController extends GetxController {
   User? get user => _user;
 
   void setUser(User user) {
-    if (_user != user) {
-      _user = user;
-      update();
-    }
+    _user = user;
+    update();
   }
 
   void rebuild() {
@@ -22,16 +20,17 @@ class UserController extends GetxController {
   Future<void> createUserUsingId() async {
     int userId = prefs!.getInt('id')!;
 
-    User user = await DjangoHelper.getUserById(userId);
+    User? user = await DjangoHelper.getUserById(userId);
 
-    setUser(user);
+    if (user != null) {
+      setUser(user);
+    } else {
+      return;
+    }
   }
 
-  void clear(User? user) {
-    if (_user == user) {
-      _user = null;
-      user = null;
-      update();
-    }
+  void clear() {
+    _user = null;
+    update();
   }
 }

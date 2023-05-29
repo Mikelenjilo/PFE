@@ -31,23 +31,27 @@ class UpdateInfoController extends GetxController {
         ancienMotDePasse.isEmpty ||
         nouveauMotDePasse.isEmpty ||
         confirmationNouveauMotDePasse.isEmpty) {
-      showError('Veuillez remplir tous les champs');
+      showError(errorText: 'Veuillez remplir tous les champs');
       return;
     } else if (!regex.hasMatch(dateNaissance)) {
-      showError('Veuillez entre une date de naissance valide');
+      showError(errorText: 'Veuillez entre une date de naissance valide');
     } else if (DateTime.now().year - DateTime.parse(dateNaissance).year >=
         120) {
       showError(
-          'Veuillez entre une date de naissance valide, vous devez avoir moins de 120 ans');
+          errorText:
+              'Veuillez entre une date de naissance valide, vous devez avoir moins de 120 ans');
     } else if (DateTime.now().year - DateTime.parse(dateNaissance).year <= 2) {
       showError(
-          'Veuillez entre une date de naissance valide, vous devez avoir plus de 2 ans');
+          errorText:
+              'Veuillez entre une date de naissance valide, vous devez avoir plus de 2 ans');
     } else if (ancienMotDePasse != user?.password) {
-      showError('Ancien mot de passe incorrect');
+      showError(errorText: 'Ancien mot de passe incorrect');
     } else if (ancienMotDePasse == nouveauMotDePasse) {
-      showError('Le nouveau mot de passe doit être différent de l\'ancien');
+      showError(
+          errorText:
+              'Le nouveau mot de passe doit être différent de l\'ancien');
     } else if (nouveauMotDePasse != confirmationNouveauMotDePasse) {
-      showError('Les mots de passe ne correspondent pas');
+      showError(errorText: 'Les mots de passe ne correspondent pas');
     } else {
       if (await updateInfo(
         nom: nom,
@@ -64,7 +68,7 @@ class UpdateInfoController extends GetxController {
           colorText: Colors.white,
         );
       } else {
-        showError('Une erreur est survenue');
+        showError(errorText: 'Une erreur est survenue');
       }
     }
   }

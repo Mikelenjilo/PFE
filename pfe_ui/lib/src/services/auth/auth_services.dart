@@ -19,6 +19,4 @@ abstract class IAuth {
     required User user,
     required List<String> diseases,
   });
-
-  Future<void> assignUserToClosestCluster(User user);
 }

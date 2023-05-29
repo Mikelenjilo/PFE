@@ -3,12 +3,15 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/map_controller.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
+import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/view/widgets/custom_loading_indicator.dart';
 
-final mapController = Get.find<MapAppController>();
-final user = Get.find<UserController>().user!;
+MapAppController mapController = Get.find<MapAppController>();
+User user = Get.find<UserController>().user!;
 
 class MapPage extends StatelessWidget {
+  const MapPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,28 +39,28 @@ class MapPage extends StatelessWidget {
                 ),
               ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                print('user id: ${user.userId}');
-                print('first name : ${user.firstName}');
-                print('last name : ${user.lastName}');
-                print('date of birth: ${user.dateOfBirth}');
-                print('email : ${user.email}');
-                print('cronic diseases: ${user.cronicDiseases}');
-                print('gender: ${user.gender}');
-                print('cluster id: ${user.clusterId}');
-                print('user location: ${user.location}');
+            // ElevatedButton(
+            //   onPressed: () {
+            //     print('user id: ${user.userId}');
+            //     print('first name : ${user.firstName}');
+            //     print('last name : ${user.lastName}');
+            //     print('date of birth: ${user.dateOfBirth}');
+            //     print('email : ${user.email}');
+            //     print('cronic diseases: ${user.cronicDiseases}');
+            //     print('gender: ${user.gender}');
+            //     print('cluster id: ${user.clusterId}');
+            //     print('user location: ${user.location}');
 
-                // final RecommandationController recommandationController =
-                //     Get.find<RecommandationController>();
+            //     // final RecommandationController recommandationController =
+            //     //     Get.find<RecommandationController>();
 
-                // for (var recommandation
-                //     in recommandationController.recommandations) {
-                //   print('recommandation : ${recommandation['recommendation']}');
-                // }
-              },
-              child: Text('test button'),
-            ),
+            //     // for (var recommandation
+            //     //     in recommandationController.recommandations) {
+            //     //   print('recommandation : ${recommandation['recommendation']}');
+            //     // }
+            //   },
+            //   child: Text('test button'),
+            // ),
             Visibility(
               visible: mapController.isLoading,
               child: const CustomLoadingIndicator(

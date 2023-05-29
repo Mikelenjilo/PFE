@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void showError(String errorText) {
+void showError({String? errorTitle, required String errorText}) {
   Get.dialog(
     AlertDialog(
-      title: const Text('Error'),
+      title: Text(errorTitle ?? 'Erreur'),
       content: Text(errorText),
       actions: [
         TextButton(

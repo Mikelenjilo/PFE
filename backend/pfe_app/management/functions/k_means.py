@@ -10,7 +10,8 @@ from pfe_app.models import User, Cluster
 
 def kmeans(numberOfClusters):
     removeCluster()
-    users = User.objects.values('longitude', 'latitude')
+    users = User.objects.exclude(latitude__isnull=True, longitude__isnull=True).values('longitude', 'latitude')
+    print(users.__len__())
     data = np.array([(x['longitude'], x['latitude']) for x in users])
 
 
@@ -41,7 +42,7 @@ def create_clusters(kmeans, numberOfClusters):
         centroid = (0, 0)
         radius = 0
 
-        for j, user in enumerate(User.objects.all()):
+        for j, user in enumerate(User.objects.exclude(latitude__isnull=True, longitude__isnull=True)):
             if labels[j] == i:
                 users_in_cluster.append(user)
 
@@ -74,8 +75,8 @@ def create_clusters(kmeans, numberOfClusters):
 
 def assign_cluster(kmeans, numberOfClusters):
     labels = kmeans.labels_
-    users = User.objects.all()
-    for i, user in enumerate(User.objects.all()):
+    users = User.objects.exclude(latitude__isnull=True, longitude__isnull=True)
+    for i, user in enumerate(users):
         user_cluster_id = Cluster.objects.get(cluster_id=0)
         for j in range(numberOfClusters):
             if labels[i] == j:

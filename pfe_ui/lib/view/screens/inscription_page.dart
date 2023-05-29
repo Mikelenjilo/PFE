@@ -5,8 +5,9 @@ import 'package:pfe_ui/controller/inscription_controller.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
 import 'package:pfe_ui/view/widgets/custom_drop_downbuttom_field.dart';
 import 'package:pfe_ui/view/widgets/custom_text_field.dart';
+import 'package:pfe_ui/view/widgets/error_widget.dart';
 
-final controller = Get.put(InscriptionController());
+InscriptionController controller = Get.find<InscriptionController>();
 
 class InscriptionPage1 extends StatelessWidget {
   const InscriptionPage1({super.key});
@@ -87,6 +88,8 @@ class InscriptionPage1 extends StatelessWidget {
 
                   if (isInfosSet1) {
                     Get.to(() => const InscriptionPage2());
+                  } else {
+                    showError(errorText: 'Erreur lors de l\'enregistrement');
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -204,7 +207,9 @@ class InscriptionPage2 extends StatelessWidget {
                   );
 
                   if (isInfosSet2) {
-                    Get.to(() => InscriptionPage3());
+                    Get.to(() => const InscriptionPage3());
+                  } else {
+                    showError(errorText: 'Erreur lors de l\'enregistrement');
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -227,7 +232,7 @@ class InscriptionPage2 extends StatelessWidget {
 class InscriptionPage3 extends StatelessWidget {
   static const List<String> options = ['Oui', 'Non'];
 
-  InscriptionPage3({super.key});
+  const InscriptionPage3({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -397,8 +402,13 @@ class InscriptionPage3 extends StatelessWidget {
             width: 250,
             child: ElevatedButton(
               onPressed: () async {
-                await controller.setInfoPage3();
-                Get.to(() => const AppPage());
+                final bool isSet = await controller.setInfoPage3();
+
+                if (isSet) {
+                  Get.to(() => const AppPage());
+                } else {
+                  showError(errorText: 'Erreur lors de l\'enregistrement');
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1273EB),
