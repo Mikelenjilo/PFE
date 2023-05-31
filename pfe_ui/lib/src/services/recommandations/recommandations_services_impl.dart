@@ -68,6 +68,41 @@ class RecommandationServicesImpl implements IRecommandationsServices {
       showError(errorText: 'Error updating user position');
     }
   }
+
+  @override
+  Future<void> updateUserDateOfContamination({
+    required int userId,
+    required String? dateOfContamination,
+  }) async {
+    final bool ifTransmit;
+    if (dateOfContamination == null) {
+      ifTransmit = false;
+    } else {
+      ifTransmit = true;
+    }
+    final Map<String, dynamic> data = {
+      'user_id': userId,
+      'date_of_contamination': dateOfContamination,
+      'if_transmit': ifTransmit,
+    };
+
+    final encodedData = jsonEncode(data);
+
+    final Uri uri =
+        Uri.parse(DjangoConstants.patchUpdateUserDateOfContaminationUrl);
+
+    final http.Response response = await http.patch(
+      uri,
+      body: encodedData,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      showError(errorText: 'Error updating user date of contamination');
+    }
+  }
 }
 
 double _avgCronicFactors() {

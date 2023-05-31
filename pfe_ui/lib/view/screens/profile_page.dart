@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:pfe_ui/controller/app_bindings.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
-import 'package:pfe_ui/main.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/view/screens/modifier_page.dart';
 import 'package:pfe_ui/view/screens/welcome_page.dart';
@@ -11,17 +11,17 @@ import 'package:pfe_ui/view/widgets/profile_page_info.dart';
 final User? user = Get.find<UserController>().user;
 final userController = Get.find<UserController>();
 
-class ProfilePage2 extends StatelessWidget {
-  const ProfilePage2({super.key});
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          prefs!.clear();
+          // prefs!.clear();
           userController.clear();
-          Get.offAll(const HomePage());
+          Get.offAll(const HomePage(), binding: AppBindings());
         },
         backgroundColor: Colors.red,
         child: const Icon(

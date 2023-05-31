@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pfe_ui/controller/app_bindings.dart';
 import 'package:pfe_ui/controller/connexion_controller.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
@@ -86,7 +87,8 @@ class Connexion extends StatelessWidget {
                                   password: passwordController.text,
                                 );
                                 if (isSignedIn) {
-                                  Get.to(() => const AppPage());
+                                  Get.to(() => const AppPage(),
+                                      binding: AppBindings());
                                 }
                               },
                               style: ElevatedButton.styleFrom(

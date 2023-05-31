@@ -9,20 +9,21 @@ class Cluster {
   LatLng centroidPosition = LatLng(0, 0);
   double radius;
   double spreadRate;
+  String region;
 
-  Cluster({
-    required this.clusterId,
-    required this.numberOfUsers,
-    required this.numberOfSickUsers,
-    required this.centroidPosition,
-    required this.radius,
-    required this.spreadRate,
-    this.users = const [],
-  });
+  Cluster(
+      {required this.clusterId,
+      required this.numberOfUsers,
+      required this.numberOfSickUsers,
+      required this.centroidPosition,
+      required this.radius,
+      required this.spreadRate,
+      this.users = const [],
+      required this.region});
 
   @override
   String toString() {
-    return 'Cluster(clusterId: $clusterId, numberOfUsers: $numberOfUsers, numberOfSickUsers: $numberOfSickUsers, centroidPosition: $centroidPosition, radius: $radius, spreadRate: $spreadRate, users: $users)';
+    return 'Cluster(clusterId: $clusterId, numberOfUsers: $numberOfUsers, numberOfSickUsers: $numberOfSickUsers, centroidPosition: $centroidPosition, region: $region, radius: $radius, spreadRate: $spreadRate, users: $users)';
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +49,7 @@ class Cluster {
       ),
       radius: json['radius'],
       spreadRate: json['spread_rate'],
+      region: json['region'],
     );
     return cluster;
   }

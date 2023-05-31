@@ -6,10 +6,6 @@ import 'package:pfe_ui/src/services/recommandations/recommandations_services_imp
 class RecommandationController extends GetxController {
   List<Map<String, num>> recommandations = [];
 
-  void getRecommandations() {
-    update();
-  }
-
   Future<void> calculateRecommandations() async {
     List<Cluster> clusters = await DjangoHelper.getClusters();
 

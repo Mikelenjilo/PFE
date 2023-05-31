@@ -7,4 +7,8 @@ abstract class IRecommandationsServices {
     required int userId,
     required LatLng position,
   });
+  Future<void> updateUserDateOfContamination({
+    required int userId,
+    required String dateOfContamination,
+  });
 }

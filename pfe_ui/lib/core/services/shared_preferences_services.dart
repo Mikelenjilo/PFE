@@ -14,7 +14,7 @@ class SharedPreferencesService {
 
   static Future<void> createUserUsingId(prefs) async {
     if (prefs!.getInt('id') != null) {
-      await userController.createUserUsingId();
+      // await userController.createUserUsingId();
     }
   }
 }

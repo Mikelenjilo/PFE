@@ -17,9 +17,9 @@ class AppPage extends StatelessWidget {
           child: IndexedStack(
             index: controller.currentIndex,
             children: [
-              const MapPage(),
+              MapPage(),
               RecommendationsPage(),
-              const ProfilePage2(),
+              const ProfilePage(),
             ],
           ),
         ),

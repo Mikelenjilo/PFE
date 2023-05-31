@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
-import 'package:pfe_ui/main.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
 import 'package:pfe_ui/view/widgets/error_widget.dart';
@@ -21,6 +20,7 @@ class InscriptionController extends GetxController {
   RxBool maladieRespiratoire = false.obs;
   RxBool cancer = false.obs;
   RxBool maladieRenale = false.obs;
+  bool isInscriptionDone = false;
 
   Future<bool> setInfoPage1({
     required String email,
@@ -82,21 +82,6 @@ class InscriptionController extends GetxController {
     return false;
   }
 
-  Future<bool> setInfoPage3() async {
-    if (selectedValue.value == 'Oui') {
-      dateOfContamination = DateTime.now().toString().split(' ')[0];
-      await inscription();
-      return true;
-    } else if (selectedValue.value == 'Non') {
-      dateOfContamination = null;
-      await inscription();
-      return true;
-    } else {
-      showError(errorText: 'Veuillez choisir une réponse');
-      return false;
-    }
-  }
-
   Future<void> inscription() async {
     final User user = await AuthImpl().registerInWithEmailAndPassword(
       email: email,
@@ -105,7 +90,6 @@ class InscriptionController extends GetxController {
       lastName: lastName,
       dateOfBirth: dateOfBirth,
       gender: gender,
-      dateOfContamination: dateOfContamination,
     );
 
     if (diseases.length != 5) {
@@ -120,7 +104,6 @@ class InscriptionController extends GetxController {
 
       Get.find<UserController>().clear();
       Get.find<UserController>().setUser(user);
-      prefs!.setInt('id', user.userId);
 
       return;
     }
@@ -132,6 +115,6 @@ class InscriptionController extends GetxController {
 
     Get.find<UserController>().clear();
     Get.find<UserController>().setUser(user);
-    prefs!.setInt('id', user.userId);
+    isInscriptionDone = true;
   }
 }

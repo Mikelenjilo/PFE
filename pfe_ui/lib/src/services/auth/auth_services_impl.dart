@@ -15,7 +15,6 @@ class AuthImpl implements IAuth {
     required String lastName,
     required String dateOfBirth,
     required String gender,
-    String? dateOfContamination,
   }) async {
     try {
       Map<String, dynamic> data = {
@@ -25,7 +24,6 @@ class AuthImpl implements IAuth {
         'email': email,
         'password': password,
         'gender': gender,
-        'date_of_contamination': dateOfContamination,
         'cluster_id': 0,
       };
       final String encodedData = json.encode(data);

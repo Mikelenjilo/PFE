@@ -10,7 +10,7 @@ class AppPageController extends GetxController {
       final RecommandationController recommandationController =
           Get.find<RecommandationController>();
 
-      recommandationController.getRecommandations();
+      recommandationController.update();
     }
     update();
   }

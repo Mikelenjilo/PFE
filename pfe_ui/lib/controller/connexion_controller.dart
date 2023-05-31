@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
-import 'package:pfe_ui/main.dart';
 import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/auth/auth_services_impl.dart';
 import 'package:pfe_ui/view/widgets/error_widget.dart';
@@ -66,9 +65,9 @@ class ConnexionController extends GetxController {
     final User user =
         await AuthImpl().signInWithEmailAndPassword(email, password);
 
-    Get.find<UserController>().clear();
+    Get.put<UserController>(UserController());
     Get.find<UserController>().setUser(user);
-    prefs!.setInt('id', user.userId);
+    // prefs!.setInt('id', user.userId);
 
     Get.snackbar(
       'Connexion réussie',

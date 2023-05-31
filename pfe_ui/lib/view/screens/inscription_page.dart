@@ -5,7 +5,6 @@ import 'package:pfe_ui/controller/inscription_controller.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
 import 'package:pfe_ui/view/widgets/custom_drop_downbuttom_field.dart';
 import 'package:pfe_ui/view/widgets/custom_text_field.dart';
-import 'package:pfe_ui/view/widgets/error_widget.dart';
 
 InscriptionController controller = Get.find<InscriptionController>();
 
@@ -88,8 +87,6 @@ class InscriptionPage1 extends StatelessWidget {
 
                   if (isInfosSet1) {
                     Get.to(() => const InscriptionPage2());
-                  } else {
-                    showError(errorText: 'Erreur lors de l\'enregistrement');
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -208,8 +205,6 @@ class InscriptionPage2 extends StatelessWidget {
 
                   if (isInfosSet2) {
                     Get.to(() => const InscriptionPage3());
-                  } else {
-                    showError(errorText: 'Erreur lors de l\'enregistrement');
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -264,48 +259,6 @@ class InscriptionPage3 extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Est-ce que vous êtes malade du COVID-19 ?',
-                  style: TextStyle(
-                    fontSize: 22.0,
-                    color: Colors.black,
-                  ),
-                ),
-                Obx(
-                  () => SizedBox(
-                    height: 50, // Specify a specific height here
-                    child: Row(
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: ListTile(
-                            title: const Text('Oui'),
-                            leading: Radio<String>(
-                              value: 'Oui',
-                              groupValue: controller.selectedValue.value,
-                              onChanged: (value) {
-                                controller.selectedValue.value = value!;
-                              },
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: ListTile(
-                            title: const Text('Non'),
-                            leading: Radio<String>(
-                              value: 'Non',
-                              groupValue: controller.selectedValue.value,
-                              onChanged: (value) {
-                                controller.selectedValue.value = value!;
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 20.0),
                 const Text(
                   'Si vous avez une maladie chronique, veuillez la sélectionner :',
@@ -397,18 +350,12 @@ class InscriptionPage3 extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 60.0),
           SizedBox(
             width: 250,
             child: ElevatedButton(
               onPressed: () async {
-                final bool isSet = await controller.setInfoPage3();
-
-                if (isSet) {
-                  Get.to(() => const AppPage());
-                } else {
-                  showError(errorText: 'Erreur lors de l\'enregistrement');
-                }
+                Get.to(() => const AppPage());
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1273EB),

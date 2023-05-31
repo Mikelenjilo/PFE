@@ -20,6 +20,8 @@ abstract class DjangoConstants {
   static const String patchAssignUserToClosestClusterUrl =
       '${baseUrl}assign_user_to_cluster/';
   static const String patchUpdateUserInfosUrl = '${baseUrl}update_user_infos/';
+  static const String patchUpdateUserDateOfContaminationUrl =
+      '${baseUrl}update_user_date_of_contamination/';
 
   // DELETE urls
   static const String deleteUserUrl = '${baseUrl}users/';

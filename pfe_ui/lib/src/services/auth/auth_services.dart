@@ -8,7 +8,6 @@ abstract class IAuth {
     required String lastName,
     required String dateOfBirth,
     required String gender,
-    String? dateOfContamination,
   });
 
   Future<User> signInWithEmailAndPassword(String email, String password);

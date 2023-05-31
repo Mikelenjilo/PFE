@@ -107,7 +107,7 @@ class DangerTresEleve extends StatelessWidget {
                   color: Colors.red,
                 ),
                 child: Text(
-                  'Taux de propagation est très élevé dans votre zone géographique',
+                  'Selon votre profil, le danger est très élevé dans votre zone géographique',
                   style: GoogleFonts.averiaLibre(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -206,7 +206,7 @@ class DangerEleve extends StatelessWidget {
                   color: Colors.deepOrange,
                 ),
                 child: Text(
-                  'Taux de propagation élevé dans votre zone',
+                  'Selon votre profil, le danger est élevé dans votre zone',
                   style: GoogleFonts.averiaLibre(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -305,7 +305,7 @@ class DangerMoyen extends StatelessWidget {
                   color: Colors.orange,
                 ),
                 child: Text(
-                  'Taux de propagation est moyen votre zone géographique',
+                  'Selon votre profil, le danger est moyen dans votre zone géographique',
                   style: GoogleFonts.averiaLibre(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -404,7 +404,7 @@ class DangerFaible extends StatelessWidget {
                   color: Colors.yellow.shade600,
                 ),
                 child: Text(
-                  'Taux de propagation est faible dans votre zone géographique',
+                  'Selon votre profil, le danger est faible dans votre zone géographique',
                   style: GoogleFonts.averiaLibre(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -503,7 +503,7 @@ class DangerTresFaible extends StatelessWidget {
                   color: Colors.green,
                 ),
                 child: Text(
-                  'Taux de propagation est très faible dans votre zone géographique',
+                  'Selon votre profil, le danger est très faible dans votre zone géographique',
                   style: GoogleFonts.averiaLibre(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
