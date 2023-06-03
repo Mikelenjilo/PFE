@@ -18,5 +18,6 @@ urlpatterns = [
     path('assign_user_to_cluster/', views.assign_user_to_cluster, name='assign_user_to_cluster'),
     path('update_user_password/', views.update_user_password, name='update_user_password'),
     path('update_user_infos/', views.update_user_infos, name='update_user_infos'),
+    path('update_user_date_of_contamination/', views.update_user_date_of_contamination, name = 'update_user_date_of_contamination'),
 ]
 

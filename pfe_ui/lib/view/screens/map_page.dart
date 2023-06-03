@@ -3,10 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/map_controller.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
-import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/view/widgets/custom_loading_indicator.dart';
-
-User user = Get.find<UserController>().user!;
 
 class MapPage extends StatelessWidget {
   final locationTextFieldController = TextEditingController();
@@ -15,7 +12,6 @@ class MapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<MapAppController>(
-      init: MapAppController(),
       builder: (mapController) {
         return Scaffold(
           body: Stack(
@@ -24,7 +20,8 @@ class MapPage extends StatelessWidget {
                 mapController: mapController.mapControllerFlutterMap,
                 options: MapOptions(
                   center: mapController.center.value,
-                  zoom: mapController.zoom.value,
+                  zoom: 2,
+                  interactiveFlags: InteractiveFlag.drag,
                   onPositionChanged: (position, hasGesture) {
                     mapController.updateZoom(position.zoom!);
                   },
@@ -69,6 +66,7 @@ class MapPage extends StatelessWidget {
                   //     targetCenter.latitude, targetCenter.longitude);
                   // print(commune.first.locality);
                   // mapController.mapControllerFlutterMap.move(targetCenter, 11);
+                  print(Get.find<UserController>().user!.clusterId);
                 },
                 child: const Text('test button'),
               ),

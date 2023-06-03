@@ -12,4 +12,14 @@ class RecommandationController extends GetxController {
     RecommandationServicesImpl().getRecommandations(clusters);
     update();
   }
+
+  double recommandationDetection(int clusterId) {
+    for (Map<String, num> recommandation in recommandations) {
+      if (recommandation['clusterId'] == clusterId) {
+        return recommandation['recommandation'] as double;
+      }
+    }
+
+    return 0;
+  }
 }

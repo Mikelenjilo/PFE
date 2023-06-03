@@ -10,7 +10,7 @@ from pfe_app.management.functions.prefiltrage_method import prefiltrageMethod, p
 
 
 from .models import User, Cluster
-from .serializers import CreateUserSerializer, UserCronicDiseasesSerializer, UserSerializer, ClusterSerializer, UserOnlineStatusSerializer, UserPasswordSerializer, UserLatitudeAndLongitudeSerializer, UserToClosestCluster, UserUpdateInfoSerializer
+from .serializers import CreateUserSerializer, UserCronicDiseasesSerializer, UserSerializer, ClusterSerializer, UserOnlineStatusSerializer, UserPasswordSerializer, UserLatitudeAndLongitudeSerializer, UserToClosestCluster, UserUpdateDateOfContamination, UserUpdateInfoSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -36,11 +36,8 @@ def get_user_by_email(request):
 @api_view(['POST'])
 def create_user(request):
     serializer = CreateUserSerializer(data=request.data)
-    user_email = request.data.get('email')
     if serializer.is_valid():
         serializer.save()
-        user = User.objects.get(email=user_email)
-        prefiltrageMethodOneUser(user.user_id)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     else:
@@ -123,4 +120,17 @@ def update_user_infos(request):
         user.password = user_password
         serializer.save()
         prefiltrageMethodOneUser(user_id)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+@api_view(['PATCH'])
+def update_user_date_of_contamination(request):
+    user_id = request.data.get('user_id')
+    user_date_of_contamination = request.data.get('date_of_contamination')
+    user_if_transmit = request.data.get('if_transmit')
+    user = User.objects.get(user_id=user_id)
+    serializer = UserUpdateDateOfContamination(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        user.date_of_contamination = user_date_of_contamination
+        user.if_transmit = user_if_transmit
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

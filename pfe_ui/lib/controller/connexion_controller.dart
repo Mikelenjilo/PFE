@@ -67,7 +67,6 @@ class ConnexionController extends GetxController {
 
     Get.put<UserController>(UserController());
     Get.find<UserController>().setUser(user);
-    // prefs!.setInt('id', user.userId);
 
     Get.snackbar(
       'Connexion réussie',

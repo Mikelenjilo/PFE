@@ -4,24 +4,26 @@ import matplotlib.pyplot as plt
 
 from pfe_app.models import User
 
-# TODO: fix the error: TypeErro: unsupported operand type(s) for +: 'dict' and 'dict'
 def elbow_method():
-    queryset = User.objects.values('latitude', 'longitude')
-    data_list = list(queryset)
-    data_array = np.array([[d['latitude'], d['longitude']] for d in data_list])
+    users = User.objects.exclude(latitude__isnull=True, longitude__isnull=True).values('longitude', 'latitude')
 
-    # normalize the data
-    data = (data_array - np.mean(data_array, axis=0)) / np.std(data_array, axis=0)
+    users_list = list(users)
+    users_array = np.array([[user['latitude'], user['longitude']] for user in users_list])
 
-    # determine the optimal number of clusters using the elbow method
+    data = (users_array - np.mean(users_array, axis=0)) / np.std(users_array, axis=0)
+
     distortions = []
-    for i in range(1, 11):
+    pourcentage = 0
+    for i in range(1, 20):
+        pourcentage += 100/20 
+        print('Pourcentage de complétion : ', pourcentage, '%')
         kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, n_init=10, random_state=0)
         kmeans.fit(data)
         distortions.append(kmeans.inertia_)
-    plt.plot(range(1, 11), distortions)
+
+
+    plt.plot(range(1, 20), distortions)
     plt.title('Elbow Method')
-    plt.xlabel('Number of Clusters')
+    plt.xlabel('Nombre de clusters')
     plt.ylabel('Distortion')
     plt.show()
-    

@@ -21,6 +21,7 @@ class User(models.Model):
     gender = models.CharField(max_length=50)
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
+    region = models.CharField(max_length=50, null=True)
     cluster_id = models.ForeignKey('Cluster', on_delete=models.CASCADE, default=get_default_cluster_id)
     if_transmit = models.BooleanField(null=True, default=False)
     date_of_contamination = models.DateField(null=True)
@@ -40,3 +41,4 @@ class Cluster(models.Model):
     centroid_longitude = models.FloatField()
     radius = models.FloatField()
     spread_rate = models.FloatField(null=True)
+    region = models.CharField(max_length=50, null=True)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -9,17 +10,10 @@ import 'package:pfe_ui/controller/recommandation_controller.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/services/django_helper.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
-import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/map/map_services_impl.dart';
 
 import 'package:pfe_ui/src/services/recommandations/recommandations_services_impl.dart';
 import 'package:pfe_ui/view/widgets/error_widget.dart';
-
-final RecommandationController recommandationController =
-    Get.find<RecommandationController>();
-final User? user = Get.find<UserController>().user;
-final InscriptionController inscriptionController =
-    Get.find<InscriptionController>();
 
 class MapAppController extends GetxController {
   Rx<LatLng> center = LatLng(36.710865, 3.094955).obs;
@@ -34,8 +28,8 @@ class MapAppController extends GetxController {
     super.onInit();
     await getLocation();
     await populateMarkers();
-    recommandationController.calculateRecommandations();
-    if (inscriptionController.isInscriptionDone) {
+    await Get.find<RecommandationController>().calculateRecommandations();
+    if (Get.find<InscriptionController>().isInscriptionDone) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
           Get.defaultDialog(
@@ -61,18 +55,26 @@ class MapAppController extends GetxController {
                               DateTime.now().toIso8601String().substring(0, 10);
                           await RecommandationServicesImpl()
                               .updateUserDateOfContamination(
-                            userId: user!.userId,
+                            userId: Get.find<UserController>().user!.userId,
                             dateOfContamination: dateOfContamination,
                           );
+                          Get.find<InscriptionController>().isInscriptionDone =
+                              false;
+
+                          Get.back();
                         },
                         child: const Text('Oui')),
                     ElevatedButton(
                       onPressed: () {
                         RecommandationServicesImpl()
                             .updateUserDateOfContamination(
-                          userId: user!.userId,
+                          userId: Get.find<UserController>().user!.userId,
                           dateOfContamination: null,
                         );
+                        Get.find<InscriptionController>().isInscriptionDone =
+                            false;
+
+                        Get.back();
                       },
                       child: const Text('Non'),
                     ),
@@ -94,8 +96,9 @@ class MapAppController extends GetxController {
     zoom.value = newZoom;
   }
 
-  double calculateMarkerSize(double zoom) {
-    return 150 * (1 / zoom);
+  double calculerDistanceEnPixels(double distanceEnM) {
+    double distanceEnPixels = distanceEnM * 1 / 47;
+    return distanceEnPixels;
   }
 
   Future<void> getLocation() async {
@@ -121,31 +124,31 @@ class MapAppController extends GetxController {
       }
 
       LatLng userLocation = LatLng(position.latitude, position.longitude);
-      user?.location = userLocation;
+      Get.find<UserController>().user!.location = userLocation;
 
       mapControllerFlutterMap.move(userLocation, 11);
 
-      UserController userController = Get.find<UserController>();
-      userController.updateUserLocation(userLocation);
+      Get.find<UserController>().updateUserLocation(userLocation);
 
       userLocationMarker = Marker(
         width: 40.0,
         height: 40.0,
         point: userLocation,
         builder: (ctx) => const Icon(
-          Icons.location_on,
+          FontAwesomeIcons.locationDot,
           size: 45,
-          color: Colors.red,
+          color: Colors.blue,
         ),
       );
 
       await RecommandationServicesImpl().updateUserLatitudeLongitude(
-        userId: user!.userId,
+        userId: Get.find<UserController>().user!.userId,
         position: userLocation,
       );
 
-      if (user!.clusterId == 0) {
-        await MapServicesImpl().assignUserToClosestCluster(user!);
+      if (Get.find<UserController>().user!.clusterId == 0) {
+        await MapServicesImpl()
+            .assignUserToClosestCluster(Get.find<UserController>().user!);
       }
 
       isLoading.value = false;
@@ -157,40 +160,51 @@ class MapAppController extends GetxController {
 
     final clustersData = await DjangoHelper.getClusters();
 
+    final DateTime dateOfBirthInDateTime =
+        DateTime.parse(Get.find<UserController>().user!.dateOfBirth);
+    final int age = DateTime.now().year - dateOfBirthInDateTime.year;
+    final double factorAge = factorAgeFunction(age);
+
+    final double avgFactorDisease = avgCronicFactors();
+
     markers.clear();
 
     for (var cluster in clustersData) {
       LatLng centroid = cluster.centroidPosition;
       Color color;
       String text;
-      if (cluster.spreadRate >= 0.7) {
+      double radius = calculerDistanceEnPixels(cluster.radius * 1000);
+      double recommandation =
+          cluster.spreadRate * factorAge * avgFactorDisease * 10;
+
+      if (recommandation >= 0.7) {
         color = Colors.red;
-        text = 'Taux de propagation très élevé';
-      } else if (cluster.spreadRate >= 0.5) {
+        text = 'Danger très élevé pour vous';
+      } else if (recommandation >= 0.5) {
         color = Colors.deepOrange;
-        text = 'Taux de propagation élevé';
-      } else if (cluster.spreadRate >= 0.4) {
+        text = 'Danger élevé pour vous';
+      } else if (recommandation >= 0.4) {
         color = Colors.orange;
-        text = 'Taux de propagation moyen';
-      } else if (cluster.spreadRate >= 0.1) {
+        text = 'Danger moyen pour vous';
+      } else if (recommandation >= 0.1) {
         color = Colors.yellow;
-        text = 'Taux de propagation faible';
-      } else if (cluster.spreadRate > 0) {
+        text = 'Danger faible pour vous';
+      } else if (recommandation > 0) {
         color = Colors.green;
-        text = 'Taux de propagation très faible';
+        text = 'Danger très faible pour vous';
       } else {
         color = Colors.white;
-        text = 'Taux de propagation nul';
+        text = 'Danger nul pour vous';
       }
       markers.add(
         Marker(
-          width: 150,
-          height: 150,
+          width: radius,
+          height: radius,
           point: centroid,
           builder: (ctx) => GestureDetector(
             child: Icon(
               Icons.circle,
-              size: 150,
+              size: radius,
               color: color.withOpacity(0.4),
             ),
             onTap: () {
@@ -213,7 +227,7 @@ class MapAppController extends GetxController {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Rayon du cluster: ${round(cluster.radius / 1000, decimals: 1)}km',
+                        'Rayon du cluster: ${round(cluster.radius, decimals: 1)}km',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 10),
@@ -228,7 +242,7 @@ class MapAppController extends GetxController {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Taux de propagation: ${cluster.spreadRate * 100}%',
+                        'Taux de propagation: ${round(cluster.spreadRate * 100, decimals: 2)}%',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],

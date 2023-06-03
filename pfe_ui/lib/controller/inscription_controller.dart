@@ -102,19 +102,20 @@ class InscriptionController extends GetxController {
         diseases: cronicDiseasesWithNullValues,
       );
 
-      Get.find<UserController>().clear();
-      Get.find<UserController>().setUser(user);
+      Get.put(UserController()).setUser(user);
+      isInscriptionDone = true;
+      diseases.value = [];
+      return;
+    } else {
+      await AuthImpl().updateCronicDiseases(
+        user: user,
+        diseases: diseases.toList().cast<String>(),
+      );
 
+      Get.find<UserController>().setUser(user);
+      isInscriptionDone = true;
+      diseases.value = [];
       return;
     }
-
-    await AuthImpl().updateCronicDiseases(
-      user: user,
-      diseases: diseases.toList().cast<String>(),
-    );
-
-    Get.find<UserController>().clear();
-    Get.find<UserController>().setUser(user);
-    isInscriptionDone = true;
   }
 }

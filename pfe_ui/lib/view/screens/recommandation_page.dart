@@ -4,39 +4,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pfe_ui/controller/recommandation_controller.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
-import 'package:pfe_ui/src/models/user.dart';
 
-final RecommandationController recommandationController =
-    Get.find<RecommandationController>();
-
-// ignore: must_be_immutable
 class RecommendationsPage extends StatelessWidget {
-  double recommandationRate = 0;
-
-  RecommendationsPage({super.key});
-
-  double recommandationDetection(int clusterId) {
-    final List<Map<String, num>> recommandations =
-        recommandationController.recommandations;
-
-    for (Map<String, num> recommandation in recommandations) {
-      if (recommandation['clusterId'] == clusterId) {
-        return recommandation['recommendation'] as double;
-      }
-    }
-
-    return 0;
-  }
-
+  const RecommendationsPage({super.key});
   @override
   Widget build(BuildContext context) {
     return GetBuilder<RecommandationController>(
       builder: (controller) {
-        final User user = Get.find<UserController>().user!;
-        final int clusterId = user.clusterId;
-        recommandationRate = recommandationDetection(clusterId);
+        final double recommandationRate = controller.recommandationDetection(
+            Get.find<UserController>().user!.clusterId);
 
-        if (clusterId == 0) {
+        if (Get.find<UserController>().user!.clusterId == 0) {
           return const Center(
             child: Text(
               'Vous n\'êtes pas encore affecté à un cluster, parceque vous n\'avez pas encore partagé votre position',

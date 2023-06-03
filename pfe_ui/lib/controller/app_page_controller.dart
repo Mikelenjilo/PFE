@@ -7,10 +7,10 @@ class AppPageController extends GetxController {
   void changePage(int index) {
     currentIndex = index;
     if (currentIndex == 1) {
-      final RecommandationController recommandationController =
-          Get.find<RecommandationController>();
+      // final RecommandationController recommandationController =
+      //     Get.put(RecommandationController());
 
-      recommandationController.update();
+      Get.find<RecommandationController>().update();
     }
     update();
   }

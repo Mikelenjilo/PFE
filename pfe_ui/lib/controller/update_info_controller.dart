@@ -59,7 +59,7 @@ class UpdateInfoController extends GetxController {
         dateNaissance: dateNaissance,
         nouveauMotDePasse: nouveauMotDePasse,
       )) {
-        userController.rebuild();
+        userController.update();
         Get.back();
         Get.snackbar(
           'Succès',

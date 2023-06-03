@@ -7,37 +7,32 @@ import 'package:pfe_ui/controller/recommandation_controller.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
 import 'package:pfe_ui/core/utils/database_constants.dart';
 import 'package:pfe_ui/src/models/cluster.dart';
-import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/src/services/recommandations/recommandations_services.dart';
 import 'package:pfe_ui/view/widgets/error_widget.dart';
-
-final RecommandationController recommandationController =
-    Get.find<RecommandationController>();
-
-final User? user = Get.find<UserController>().user;
 
 class RecommandationServicesImpl implements IRecommandationsServices {
   @override
   void getRecommandations(List<Cluster> clusters) {
-    recommandationController.recommandations.clear();
+    Get.find<RecommandationController>().recommandations.clear();
 
-    final DateTime dateOfBirthInDateTime = DateTime.parse(user!.dateOfBirth);
+    final DateTime dateOfBirthInDateTime =
+        DateTime.parse(Get.find<UserController>().user!.dateOfBirth);
     final int age = DateTime.now().year - dateOfBirthInDateTime.year;
-    final double factorAge = _factorAge(age);
+    final double factorAge = factorAgeFunction(age);
 
-    final double avgFactorDisease = _avgCronicFactors();
+    final double avgFactorDisease = avgCronicFactors();
 
-    for (final cluster in clusters) {
-      final double spreadRate = cluster.spreadRate;
+    final cluster = clusters.firstWhere((cluster) =>
+        cluster.clusterId == Get.find<UserController>().user!.clusterId);
 
-      double recommendation = (spreadRate * avgFactorDisease * factorAge);
+    double recommandation =
+        cluster.spreadRate * avgFactorDisease * factorAge * 10;
 
-      Map<String, num> recommandationMap = {
-        'clusterId': cluster.clusterId,
-        'recommendation': recommendation,
-      };
-      recommandationController.recommandations.add(recommandationMap);
-    }
+    Map<String, num> recommandationMap = {
+      'clusterId': cluster.clusterId,
+      'recommandation': recommandation,
+    };
+    Get.find<RecommandationController>().recommandations.add(recommandationMap);
   }
 
   @override
@@ -105,20 +100,23 @@ class RecommandationServicesImpl implements IRecommandationsServices {
   }
 }
 
-double _avgCronicFactors() {
-  switch (user?.cronicDiseases?.length) {
+double avgCronicFactors() {
+  switch (Get.find<UserController>().user?.cronicDiseases?.length) {
     case 0:
       return 0.05;
     case 1:
-      String? cronicDisease1 = user?.cronicDiseases?[0];
+      String? cronicDisease1 =
+          Get.find<UserController>().user?.cronicDiseases?[0];
 
       double factorDisease1 = _factorDisease(cronicDisease1);
 
       return factorDisease1;
 
     case 2:
-      String? cronicDisease1 = user?.cronicDiseases?[0];
-      String? cronicDisease2 = user?.cronicDiseases?[1];
+      String? cronicDisease1 =
+          Get.find<UserController>().user?.cronicDiseases?[0];
+      String? cronicDisease2 =
+          Get.find<UserController>().user?.cronicDiseases?[1];
 
       double factorDisease1 = _factorDisease(cronicDisease1);
       double factorDisease2 = _factorDisease(cronicDisease2);
@@ -135,9 +133,12 @@ double _avgCronicFactors() {
       return avgFactorDiseases;
 
     case 3:
-      String? cronicDisease1 = user?.cronicDiseases?[0];
-      String? cronicDisease2 = user?.cronicDiseases?[1];
-      String? cronicDisease3 = user?.cronicDiseases?[2];
+      String? cronicDisease1 =
+          Get.find<UserController>().user?.cronicDiseases?[0];
+      String? cronicDisease2 =
+          Get.find<UserController>().user?.cronicDiseases?[1];
+      String? cronicDisease3 =
+          Get.find<UserController>().user?.cronicDiseases?[2];
 
       double factorDisease1 = _factorDisease(cronicDisease1);
       double factorDisease2 = _factorDisease(cronicDisease2);
@@ -156,10 +157,14 @@ double _avgCronicFactors() {
       return avgFactorDiseases;
 
     case 4:
-      String? cronicDisease1 = user?.cronicDiseases?[0];
-      String? cronicDisease2 = user?.cronicDiseases?[1];
-      String? cronicDisease3 = user?.cronicDiseases?[2];
-      String? cronicDisease4 = user?.cronicDiseases?[3];
+      String? cronicDisease1 =
+          Get.find<UserController>().user?.cronicDiseases?[0];
+      String? cronicDisease2 =
+          Get.find<UserController>().user?.cronicDiseases?[1];
+      String? cronicDisease3 =
+          Get.find<UserController>().user?.cronicDiseases?[2];
+      String? cronicDisease4 =
+          Get.find<UserController>().user?.cronicDiseases?[3];
 
       double factorDisease1 = _factorDisease(cronicDisease1);
       double factorDisease2 = _factorDisease(cronicDisease2);
@@ -180,11 +185,16 @@ double _avgCronicFactors() {
       return avgFactorDiseases;
 
     case 5:
-      String? cronicDisease1 = user?.cronicDiseases?[0];
-      String? cronicDisease2 = user?.cronicDiseases?[1];
-      String? cronicDisease3 = user?.cronicDiseases?[2];
-      String? cronicDisease4 = user?.cronicDiseases?[3];
-      String? cronicDisease5 = user?.cronicDiseases?[4];
+      String? cronicDisease1 =
+          Get.find<UserController>().user?.cronicDiseases?[0];
+      String? cronicDisease2 =
+          Get.find<UserController>().user?.cronicDiseases?[1];
+      String? cronicDisease3 =
+          Get.find<UserController>().user?.cronicDiseases?[2];
+      String? cronicDisease4 =
+          Get.find<UserController>().user?.cronicDiseases?[3];
+      String? cronicDisease5 =
+          Get.find<UserController>().user?.cronicDiseases?[4];
 
       double factorDisease1 = _factorDisease(cronicDisease1);
       double factorDisease2 = _factorDisease(cronicDisease2);
@@ -232,7 +242,7 @@ double _factorDisease(String? disease) {
   }
 }
 
-double _factorAge(int age) {
+double factorAgeFunction(int age) {
   if (age > 0 && age <= 15) {
     return 0.1;
   } else if (age > 15 && age <= 30) {

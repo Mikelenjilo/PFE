@@ -3,13 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pfe_ui/controller/app_bindings.dart';
 import 'package:pfe_ui/controller/user_controller.dart';
-import 'package:pfe_ui/src/models/user.dart';
 import 'package:pfe_ui/view/screens/modifier_page.dart';
 import 'package:pfe_ui/view/screens/welcome_page.dart';
 import 'package:pfe_ui/view/widgets/profile_page_info.dart';
-
-final User? user = Get.find<UserController>().user;
-final userController = Get.find<UserController>();
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -19,9 +15,8 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // prefs!.clear();
-          userController.clear();
-          Get.offAll(const HomePage(), binding: AppBindings());
+          Get.deleteAll();
+          Get.offAll(() => const HomePage(), binding: AppBindings());
         },
         backgroundColor: Colors.red,
         child: const Icon(
@@ -69,7 +64,7 @@ class ProfilePage extends StatelessWidget {
                   const SizedBox(height: 20.0),
                   GetBuilder<UserController>(builder: (context) {
                     return Text(
-                      '${user?.lastName} ${user?.firstName}',
+                      '${Get.find<UserController>().user!.lastName} ${Get.find<UserController>().user!.firstName}',
                       style: const TextStyle(
                         fontSize: 38,
                         color: Colors.white,
@@ -78,7 +73,7 @@ class ProfilePage extends StatelessWidget {
                   }),
                   GetBuilder<UserController>(builder: (context) {
                     return Text(
-                      '#${user?.userId}',
+                      '#${Get.find<UserController>().user!.userId}',
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white.withOpacity(0.6),
@@ -99,23 +94,23 @@ class ProfilePage extends StatelessWidget {
                   return Column(
                     children: [
                       ProfilePageInfo(
-                        text: user!.lastName,
+                        text: Get.find<UserController>().user!.lastName,
                         icon: Icons.person,
                       ),
                       ProfilePageInfo(
-                        text: user!.firstName,
+                        text: Get.find<UserController>().user!.firstName,
                         icon: Icons.person,
                       ),
                       ProfilePageInfo(
-                        text: user!.dateOfBirth,
+                        text: Get.find<UserController>().user!.dateOfBirth,
                         icon: Icons.date_range,
                       ),
                       ProfilePageInfo(
-                        text: user!.gender,
+                        text: Get.find<UserController>().user!.gender,
                         icon: FontAwesomeIcons.venusMars,
                       ),
                       ProfilePageInfo(
-                        text: user!.email,
+                        text: Get.find<UserController>().user!.email,
                         icon: Icons.email,
                       ),
                     ],

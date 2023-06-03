@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pfe_ui/controller/app_bindings.dart';
 import 'package:pfe_ui/core/utils/ui_constants.dart';
 import 'package:pfe_ui/controller/inscription_controller.dart';
 import 'package:pfe_ui/view/screens/app_page.dart';
 import 'package:pfe_ui/view/widgets/custom_drop_downbuttom_field.dart';
 import 'package:pfe_ui/view/widgets/custom_text_field.dart';
-
-InscriptionController controller = Get.find<InscriptionController>();
 
 class InscriptionPage1 extends StatelessWidget {
   const InscriptionPage1({super.key});
@@ -79,7 +78,9 @@ class InscriptionPage1 extends StatelessWidget {
                   top: 120, bottom: 10.0, left: 20.0, right: 20.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  final bool isInfosSet1 = await controller.setInfoPage1(
+                  Get.put(InscriptionController());
+                  final bool isInfosSet1 =
+                      await Get.find<InscriptionController>().setInfoPage1(
                     email: emailController.text,
                     password: passwordController.text,
                     passwordConfrimation: passwordConfirmController.text,
@@ -196,7 +197,8 @@ class InscriptionPage2 extends StatelessWidget {
                   top: 82, bottom: 10.0, left: 20.0, right: 20.0),
               child: ElevatedButton(
                 onPressed: () {
-                  final bool isInfosSet2 = controller.setInfoPage2(
+                  final bool isInfosSet2 =
+                      Get.find<InscriptionController>().setInfoPage2(
                     firstName: firstNameController.text,
                     lastName: lastNameController.text,
                     dateOfBirth: dateOfBirthController.text,
@@ -272,74 +274,114 @@ class InscriptionPage3 extends StatelessWidget {
                     children: [
                       CheckboxListTile(
                         title: const Text('Diabète'),
-                        value: controller.diabete.value,
+                        value: Get.find<InscriptionController>().diabete.value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
-                          controller.diabete.value = value!;
+                          Get.find<InscriptionController>().diabete.value =
+                              value!;
                           if (value &&
-                              !controller.diseases.contains('diabete')) {
-                            controller.diseases.add('diabete');
+                              !Get.find<InscriptionController>()
+                                  .diseases
+                                  .contains('diabete')) {
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .add('diabete');
                           } else if (value == false) {
-                            controller.diseases.remove('diabete');
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .remove('diabete');
                           }
                         },
                       ),
                       CheckboxListTile(
                         title: const Text('Cancer'),
-                        value: controller.cancer.value,
+                        value: Get.find<InscriptionController>().cancer.value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
-                          controller.cancer.value = value!;
+                          Get.find<InscriptionController>().cancer.value =
+                              value!;
                           if (value &&
-                              !controller.diseases.contains('cancer')) {
-                            controller.diseases.add('cancer');
+                              !Get.find<InscriptionController>()
+                                  .diseases
+                                  .contains('cancer')) {
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .add('cancer');
                           } else if (value == false) {
-                            controller.diseases.remove('cancer');
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .remove('cancer');
                           }
                         },
                       ),
                       CheckboxListTile(
                         title: const Text('Maladies Cardiaques'),
-                        value: controller.maladieCardiaque.value,
+                        value: Get.find<InscriptionController>()
+                            .maladieCardiaque
+                            .value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
-                          controller.maladieCardiaque.value = value!;
+                          Get.find<InscriptionController>()
+                              .maladieCardiaque
+                              .value = value!;
                           if (value &&
-                              !controller.diseases
+                              !Get.find<InscriptionController>()
+                                  .diseases
                                   .contains('maladie cardiques')) {
-                            controller.diseases.add('maladies cardiaques');
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .add('maladies cardiaques');
                           } else if (value == false) {
-                            controller.diseases.remove('maladie cardiques');
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .remove('maladie cardiques');
                           }
                         },
                       ),
                       CheckboxListTile(
                         title: const Text('Maladies Rénales'),
-                        value: controller.maladieRenale.value,
+                        value: Get.find<InscriptionController>()
+                            .maladieRenale
+                            .value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
-                          controller.maladieRenale.value = value!;
+                          Get.find<InscriptionController>()
+                              .maladieRenale
+                              .value = value!;
                           if (value &&
-                              !controller.diseases
+                              !Get.find<InscriptionController>()
+                                  .diseases
                                   .contains('maladies renales')) {
-                            controller.diseases.add('maladies renales');
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .add('maladies renales');
                           } else if (value == false) {
-                            controller.diseases.remove('maladies renales');
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .remove('maladies renales');
                           }
                         },
                       ),
                       CheckboxListTile(
                         title: const Text('Maladie Respiratoire'),
-                        value: controller.maladieRespiratoire.value,
+                        value: Get.find<InscriptionController>()
+                            .maladieRespiratoire
+                            .value,
                         controlAffinity: ListTileControlAffinity.platform,
                         onChanged: (bool? value) {
-                          controller.maladieRespiratoire.value = value!;
+                          Get.find<InscriptionController>()
+                              .maladieRespiratoire
+                              .value = value!;
                           if (value &&
-                              !controller.diseases
+                              !Get.find<InscriptionController>()
+                                  .diseases
                                   .contains('maladies respiratoires')) {
-                            controller.diseases.add('maladies respiratoires');
+                            Get.find<InscriptionController>()
+                                .diseases
+                                .add('maladies respiratoires');
                           } else if (value == false) {
-                            controller.diseases
+                            Get.find<InscriptionController>()
+                                .diseases
                                 .remove('maladies respiratoires');
                           }
                         },
@@ -355,7 +397,8 @@ class InscriptionPage3 extends StatelessWidget {
             width: 250,
             child: ElevatedButton(
               onPressed: () async {
-                Get.to(() => const AppPage());
+                await Get.find<InscriptionController>().inscription();
+                Get.to(() => const AppPage(), binding: AppBindings());
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1273EB),

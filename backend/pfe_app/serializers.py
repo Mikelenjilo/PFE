@@ -14,7 +14,7 @@ class ClusterSerializer(serializers.ModelSerializer):
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'password', 'gender', 'date_of_contamination', 'cluster_id']
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'password', 'gender', 'cluster_id']
 
 class UserOnlineStatusSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,3 +47,8 @@ class UserUpdateInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['user_id', 'first_name', 'last_name', 'date_of_birth', 'password']
+
+class UserUpdateDateOfContamination(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['user_id', 'date_of_contamination', 'if_transmit']
